@@ -13,6 +13,7 @@ where
     B: Backend,
 {
     let size = rect.size();
+    check_size(&size);
 
     let chunks = Layout::default()
         .direction(Direction::Vertical)
