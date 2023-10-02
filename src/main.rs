@@ -1,6 +1,7 @@
 mod app;
+mod inputs;
 
-use app::{ui, App};
+use app::{app::App, ui};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use std::{cell::RefCell, io, rc::Rc};
 use tui::{backend::CrosstermBackend, Terminal};

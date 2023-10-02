@@ -6,7 +6,7 @@ use tui::{
     Frame,
 };
 
-use super::App;
+use super::app::App;
 
 pub fn draw<B>(rect: &mut Frame<B>, _app: &App)
 where
