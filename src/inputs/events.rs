@@ -23,6 +23,7 @@ pub struct Events {
 
 impl Events {
     /// Constructs an new instance of `Events` with the default config.
+    /// mpsc setup
     pub fn new(tick_rate: Duration) -> Self {
         let (tx, rx) = channel();
 

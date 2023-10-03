@@ -26,11 +26,13 @@ impl App {
         Self { state, actions }
     }
 
+    /// Handle a user action
     pub fn do_action(&mut self, key: Key) -> AppReturn {
         if let Some(action) = self.actions.find(key) {
             println!("Run action [{:?}]", action);
             match action {
                 Action::Quit => AppReturn::Exit,
+                Action::Enter => AppReturn::Continue,
             }
         } else {
             println!("No action associated to {}", key);
@@ -38,6 +40,7 @@ impl App {
         }
     }
 
+    /// Update the app or dispatch events on tick
     pub fn update_on_tick(&mut self) -> AppReturn {
         // Increments counter
         self.state.incr_tick();

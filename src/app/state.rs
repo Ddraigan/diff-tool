@@ -1,6 +1,5 @@
 use std::time::Duration;
 
-#[derive(Clone)]
 pub enum AppState {
     Init,
     Initialized {
