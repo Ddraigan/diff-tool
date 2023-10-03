@@ -7,7 +7,7 @@ use tui::{
     Frame,
 };
 
-use super::{actions::Actions, app::App};
+use super::{actions::Actions, app::App, state::AppState};
 
 /// Draws all the components
 pub fn draw<B>(rect: &mut Frame<B>, app: &App)
@@ -54,8 +54,8 @@ where
         .constraints([Constraint::Percentage(70), Constraint::Percentage(30)].as_ref())
         .split(chunks[2]);
 
-    /* let logs = draw_logs();
-    rect.render_widget(logs, footer_chunks[0]); */
+    let logs = draw_console(app.state());
+    rect.render_widget(logs, footer_chunks[0]);
 
     // Help Menu
     let help_menu = draw_help(app.actions());
@@ -106,30 +106,30 @@ fn draw_body<'a>() -> Paragraph<'a> {
         )
 }
 
-/// Draws the log component
-/* fn draw_logs<'a>() -> TuiLoggerWidget<'a> {
-    TuiLoggerWidget::default()
-        .style_error(Style::default().fg(Color::Red))
-        .style_debug(Style::default().fg(Color::Green))
-        .style_warn(Style::default().fg(Color::Yellow))
-        .style_trace(Style::default().fg(Color::Gray))
-        .style_info(Style::default().fg(Color::Cyan))
+fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
+    let data = if let Some(info) = state.console() {
+        let mut a = vec![];
+        for x in info.iter() {
+            a.push(Span::from(x.to_owned()))
+        }
+        a
+    } else {
+        let x: Vec<Span> = vec![];
+        x
+    };
+
+    let text = Spans::from(data);
+
+    Paragraph::new(text)
+        .style(Style::default().fg(tui::style::Color::LightMagenta))
+        .alignment(tui::layout::Alignment::Left)
         .block(
             Block::default()
-                .title("Logs")
-                .border_style(
-                    Style::default()
-                        .fg(tui::style::Color::White)
-                        .bg(tui::style::Color::Black),
-                )
-                .borders(Borders::ALL),
+                .borders(Borders::ALL)
+                .style(Style::default().fg(tui::style::Color::White))
+                .border_type(tui::widgets::BorderType::Plain),
         )
-        .style(
-            Style::default()
-                .fg(tui::style::Color::White)
-                .bg(tui::style::Color::Black),
-        )
-} */
+}
 
 /// Draws the help menu component
 fn draw_help(actions: &Actions) -> Table {

@@ -35,7 +35,8 @@ impl App {
                 Action::Enter => AppReturn::Continue,
             }
         } else {
-            println!("No action associated to {}", key);
+            self.state
+                .send_to_console(format!("No action associated to {}", key));
             AppReturn::Continue
         }
     }

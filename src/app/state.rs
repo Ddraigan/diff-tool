@@ -6,6 +6,7 @@ pub enum AppState {
         duration: Duration,
         counter_sleep: u32,
         counter_tick: u64,
+        console: Vec<String>,
     },
 }
 
@@ -24,6 +25,7 @@ impl AppState {
             duration,
             counter_sleep,
             counter_tick,
+            console: vec![],
         }
     }
 
@@ -64,6 +66,21 @@ impl AppState {
             Some(duration)
         } else {
             None
+        }
+    }
+
+    pub fn console(&self) -> Option<&Vec<String>> {
+        if let Self::Initialized { console, .. } = self {
+            Some(console)
+        } else {
+            None
+        }
+    }
+
+    pub fn send_to_console(&mut self, content: String) {
+        if let Self::Initialized { console, .. } = self {
+            Some(console.push(content));
+            println!("{:?}", console);
         }
     }
 
