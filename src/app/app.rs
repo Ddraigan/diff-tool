@@ -21,7 +21,7 @@ pub struct App {
 impl App {
     pub fn new() -> Self {
         let state = AppState::default();
-        let actions = vec![Action::Quit].into();
+        let actions = vec![Action::Quit, Action::Enter].into();
 
         Self { state, actions }
     }
@@ -37,6 +37,7 @@ impl App {
         } else {
             self.state
                 .send_to_console(format!("No action associated to {}", key));
+            println!("No action associated to {}", key);
             AppReturn::Continue
         }
     }

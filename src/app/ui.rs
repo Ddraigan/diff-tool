@@ -107,18 +107,18 @@ fn draw_body<'a>() -> Paragraph<'a> {
 }
 
 fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
-    let data = if let Some(info) = state.console() {
-        let mut a = vec![];
-        for x in info.iter() {
-            a.push(Span::from(x.to_owned()))
+    let lines = if let Some(data) = state.console() {
+        let mut list = vec![];
+        for item in data.iter() {
+            list.push(Span::from(item.to_owned()))
         }
-        a
+        list
     } else {
         let x: Vec<Span> = vec![];
         x
     };
 
-    let text = Spans::from(data);
+    let text = Spans::from(lines);
 
     Paragraph::new(text)
         .style(Style::default().fg(tui::style::Color::LightMagenta))
