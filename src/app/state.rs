@@ -4,7 +4,6 @@ pub enum AppState {
     Init,
     Initialized {
         duration: Duration,
-        counter_sleep: u32,
         counter_tick: u64,
         console: Vec<String>,
     },
@@ -19,11 +18,9 @@ impl Default for AppState {
 impl AppState {
     pub fn initialized() -> Self {
         let duration = Duration::from_secs(1);
-        let counter_sleep = 0;
         let counter_tick = 0;
         Self::Initialized {
             duration,
-            counter_sleep,
             counter_tick,
             console: vec![],
         }
@@ -33,23 +30,9 @@ impl AppState {
         matches!(self, &Self::Initialized { .. })
     }
 
-    pub fn incr_sleep(&mut self) {
-        if let Self::Initialized { counter_sleep, .. } = self {
-            *counter_sleep += 1;
-        }
-    }
-
     pub fn incr_tick(&mut self) {
         if let Self::Initialized { counter_tick, .. } = self {
             *counter_tick += 1;
-        }
-    }
-
-    pub fn count_sleep(&self) -> Option<u32> {
-        if let Self::Initialized { counter_sleep, .. } = self {
-            Some(*counter_sleep)
-        } else {
-            None
         }
     }
 
