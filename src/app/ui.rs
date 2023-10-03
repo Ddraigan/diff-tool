@@ -1,5 +1,3 @@
-use std::io::BufRead;
-
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout, Rect},
@@ -57,7 +55,7 @@ where
         .split(chunks[2]);
 
     let logs = draw_console(app.state());
-    rect.render_stateful_widget(logs, footer_chunks[0]);
+    rect.render_widget(logs, footer_chunks[0]);
 
     // Help Menu
     let help_menu = draw_help(app.actions());
@@ -115,8 +113,8 @@ fn draw_body<'a>(state: &AppState) -> Paragraph<'a> {
         )
 }
 
-fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
-    let lines = if let Some(data) = state.console() {
+fn draw_console(state: &AppState) -> Table {
+    /* let lines = if let Some(data) = state.console() {
         let mut list = vec![];
         for item in data.iter() {
             list.push(Span::from(item.to_owned()))
@@ -125,17 +123,24 @@ fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
     } else {
         let x: Vec<Span> = vec![];
         x
-    };
+    }; */
 
-    Paragraph::new(Spans::from(lines))
-        .style(Style::default().fg(Color::LightMagenta))
-        .alignment(tui::layout::Alignment::Left)
+    let lines: Vec<Row> = state
+        .console()
+        .unwrap_or(&vec![])
+        .iter()
+        .map(|item| Row::new(vec![Cell::from(Span::from(item.to_owned()))]))
+        .collect();
+
+    Table::new(lines)
         .block(
             Block::default()
                 .borders(Borders::ALL)
                 .style(Style::default().fg(Color::White))
                 .border_type(tui::widgets::BorderType::Plain),
         )
+        .widths(&[Constraint::Length(11), Constraint::Min(20)])
+        .column_spacing(1)
 }
 
 /// Draws the help menu component
@@ -143,7 +148,7 @@ fn draw_help(actions: &Actions) -> Table {
     let key_style = Style::default().fg(Color::LightCyan);
     let help_style = Style::default().fg(Color::Gray);
 
-    let mut rows = vec![];
+    let mut lines = vec![];
     for action in actions.actions().iter() {
         let mut first = true;
         for key in action.keys() {
@@ -157,11 +162,11 @@ fn draw_help(actions: &Actions) -> Table {
                 Cell::from(Span::styled(key.to_string(), key_style)),
                 Cell::from(Span::styled(help, help_style)),
             ]);
-            rows.push(row);
+            lines.push(row);
         }
     }
 
-    Table::new(rows)
+    Table::new(lines)
         .block(
             Block::default()
                 .borders(Borders::ALL)

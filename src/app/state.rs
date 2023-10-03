@@ -80,7 +80,6 @@ impl AppState {
     pub fn send_to_console(&mut self, content: String) {
         if let Self::Initialized { console, .. } = self {
             Some(console.push(content));
-            println!("{:?}", console);
         }
     }
 

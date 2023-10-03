@@ -20,7 +20,7 @@ pub struct App {
 
 impl App {
     pub fn new() -> Self {
-        let state = AppState::default();
+        let state = AppState::initialized();
         let actions = vec![Action::Quit, Action::Enter].into();
 
         Self { state, actions }
@@ -29,7 +29,8 @@ impl App {
     /// Handle a user action
     pub fn do_action(&mut self, key: Key) -> AppReturn {
         if let Some(action) = self.actions.find(key) {
-            println!("Run action [{:?}]", action);
+            self.state
+                .send_to_console(format!("Run action [{:?}]", action));
             match action {
                 Action::Quit => AppReturn::Exit,
                 Action::Enter => AppReturn::Continue,
@@ -37,7 +38,6 @@ impl App {
         } else {
             self.state
                 .send_to_console(format!("No action associated to {}", key));
-            println!("No action associated to {}", key);
             AppReturn::Continue
         }
     }
