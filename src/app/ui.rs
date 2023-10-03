@@ -114,17 +114,6 @@ fn draw_body<'a>(state: &AppState) -> Paragraph<'a> {
 }
 
 fn draw_console(state: &AppState) -> Table {
-    /* let lines = if let Some(data) = state.console() {
-        let mut list = vec![];
-        for item in data.iter() {
-            list.push(Span::from(item.to_owned()))
-        }
-        list
-    } else {
-        let x: Vec<Span> = vec![];
-        x
-    }; */
-
     let lines: Vec<Row> = state
         .console()
         .unwrap_or(&vec![])
