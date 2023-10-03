@@ -1,3 +1,5 @@
+use std::io::BufRead;
+
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout, Rect},
@@ -114,7 +116,7 @@ fn draw_body<'a>(state: &AppState) -> Paragraph<'a> {
 }
 
 fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
-    /* let lines = if let Some(data) = state.console() {
+    let lines = if let Some(data) = state.console() {
         let mut list = vec![];
         for item in data.iter() {
             list.push(Span::from(item.to_owned()))
@@ -123,19 +125,9 @@ fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
     } else {
         let x: Vec<Span> = vec![];
         x
-    }; */
+    };
 
-    let lines: Vec<Span> = state
-        .console()
-        .unwrap()
-        .to_owned()
-        .iter()
-        .map(|x| Spans::from(vec![Span::styled(x, Style::default().fg(Color::Magenta))]))
-        .collect();
-
-    // let text = Spans::from(lines);
-
-    Paragraph::new(lines)
+    Paragraph::new(Spans::from(lines))
         .style(Style::default().fg(Color::LightMagenta))
         .alignment(tui::layout::Alignment::Left)
         .block(
