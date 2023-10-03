@@ -57,7 +57,7 @@ where
         .split(chunks[2]);
 
     let logs = draw_console(app.state());
-    rect.render_widget(logs, footer_chunks[0]);
+    rect.render_stateful_widget(logs, footer_chunks[0]);
 
     // Help Menu
     let help_menu = draw_help(app.actions());
