@@ -1,7 +1,7 @@
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout, Rect},
-    style::{Modifier, Style},
+    style::{Color, Modifier, Style},
     text::{Span, Spans},
     widgets::{Block, Borders, Cell, Paragraph, Row, Table},
     Frame,
@@ -41,11 +41,11 @@ where
         .split(chunks[1]);
 
     // Left Diff
-    let body_left = draw_body();
+    let body_left = draw_body(app.state());
     rect.render_widget(body_left, body_chunks[0]);
 
     // Right Diff
-    let body_right = draw_body();
+    let body_right = draw_body(app.state());
     rect.render_widget(body_right, body_chunks[1]);
 
     // Footer Layout (Logs & Help)
@@ -86,8 +86,15 @@ fn draw_title<'a>() -> Paragraph<'a> {
 }
 
 /// Draws the body components
-fn draw_body<'a>() -> Paragraph<'a> {
+fn draw_body<'a>(state: &AppState) -> Paragraph<'a> {
+    let initialized_text = if state.is_initialized() {
+        "Initialized"
+    } else {
+        "Not Initialized !"
+    };
+
     let text = Spans::from(vec![
+        Span::raw(initialized_text),
         Span::raw("First"),
         Span::styled("line", Style::default().add_modifier(Modifier::ITALIC)),
         Span::raw("."),
@@ -107,7 +114,7 @@ fn draw_body<'a>() -> Paragraph<'a> {
 }
 
 fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
-    let lines = if let Some(data) = state.console() {
+    /* let lines = if let Some(data) = state.console() {
         let mut list = vec![];
         for item in data.iter() {
             list.push(Span::from(item.to_owned()))
@@ -116,25 +123,33 @@ fn draw_console<'a>(state: &AppState) -> Paragraph<'a> {
     } else {
         let x: Vec<Span> = vec![];
         x
-    };
+    }; */
 
-    let text = Spans::from(lines);
+    let lines: Vec<Span> = state
+        .console()
+        .unwrap()
+        .to_owned()
+        .iter()
+        .map(|x| Spans::from(vec![Span::styled(x, Style::default().fg(Color::Magenta))]))
+        .collect();
 
-    Paragraph::new(text)
-        .style(Style::default().fg(tui::style::Color::LightMagenta))
+    // let text = Spans::from(lines);
+
+    Paragraph::new(lines)
+        .style(Style::default().fg(Color::LightMagenta))
         .alignment(tui::layout::Alignment::Left)
         .block(
             Block::default()
                 .borders(Borders::ALL)
-                .style(Style::default().fg(tui::style::Color::White))
+                .style(Style::default().fg(Color::White))
                 .border_type(tui::widgets::BorderType::Plain),
         )
 }
 
 /// Draws the help menu component
 fn draw_help(actions: &Actions) -> Table {
-    let key_style = Style::default().fg(tui::style::Color::LightCyan);
-    let help_style = Style::default().fg(tui::style::Color::Gray);
+    let key_style = Style::default().fg(Color::LightCyan);
+    let help_style = Style::default().fg(Color::Gray);
 
     let mut rows = vec![];
     for action in actions.actions().iter() {
