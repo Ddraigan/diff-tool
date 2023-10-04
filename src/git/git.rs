@@ -46,12 +46,12 @@ pub enum DiffKind {
 }
 
 impl DiffKind {
-    fn value(&self) -> char {
+    pub fn value(&self) -> &str {
         match self {
-            DiffKind::Addition => '+',
-            DiffKind::Removal => '-',
-            DiffKind::Neutral => ' ',
-            DiffKind::Blank => ' ',
+            DiffKind::Addition => "+",
+            DiffKind::Removal => "-",
+            DiffKind::Neutral => " ",
+            DiffKind::Blank => " ",
         }
     }
 }
