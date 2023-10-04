@@ -1,5 +1,3 @@
-use std::cmp;
-
 use tui::{
     layout::Constraint,
     style::{Modifier, Style},
@@ -10,13 +8,13 @@ use crate::git::git::{DiffKind, DiffLine};
 
 /// Draws the body components
 pub(crate) fn draw_body<'a>(diff: &'a Vec<DiffLine>) -> Table<'a> {
-    let largest_line_number = diff
+    /* let largest_line_number = diff
         .iter()
         .map(|x| x.line_number().unwrap_or(0))
         .max()
         .unwrap_or(0);
     let length = cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
-    let length = length as u16;
+    let length = length as u16; */
 
     let lines: Vec<Row> = diff.iter().map(parse_diff_line).collect();
 
@@ -28,10 +26,10 @@ pub(crate) fn draw_body<'a>(diff: &'a Vec<DiffLine>) -> Table<'a> {
                 .border_type(tui::widgets::BorderType::Plain),
         )
         .widths(&[
-            Constraint::Length(length),
+            Constraint::Length(4),
             Constraint::Percentage(2),
             Constraint::Percentage(1),
-            Constraint::Percentage(95),
+            Constraint::Percentage(97),
         ])
         .column_spacing(0)
 }
