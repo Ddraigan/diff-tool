@@ -1,12 +1,13 @@
 pub mod app;
+pub mod git;
 pub mod inputs;
 
+use anyhow::Result;
 use app::{
     app::{App, AppReturn},
     ui,
 };
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
-use eyre::Result;
 use inputs::events::{Events, InputEvent};
 use std::{cell::RefCell, io, rc::Rc, time::Duration};
 use tui::{backend::CrosstermBackend, Terminal};
