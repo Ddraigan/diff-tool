@@ -62,5 +62,15 @@ pub fn get_diff(diff_string: &str) -> Diff {
         if !start {
             continue;
         }
+
+        if line.starts_with("+") {
+            remove_first_char(line);
+        }
     }
+}
+
+fn remove_first_char(string: &str) -> &str {
+    let mut chars = string.chars();
+    chars.next();
+    chars.as_str()
 }
