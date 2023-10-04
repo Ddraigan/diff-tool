@@ -6,7 +6,7 @@ pub mod inputs;
 use anyhow::Result;
 use app::{
     app::{App, AppReturn},
-    ui,
+    ui::ui,
 };
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use inputs::events::{Events, InputEvent};

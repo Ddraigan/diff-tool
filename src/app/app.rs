@@ -2,7 +2,7 @@ use super::{
     actions::{Action, Actions},
     state::AppState,
 };
-use crate::inputs::key::Key;
+use crate::{git::git::Diff, inputs::key::Key};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum AppReturn {
@@ -19,8 +19,8 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> Self {
-        let state = AppState::initialized();
+    pub fn new(diff: Diff) -> Self {
+        let state = AppState::initialized(diff);
         let actions = vec![Action::Quit, Action::Enter].into();
 
         Self { state, actions }

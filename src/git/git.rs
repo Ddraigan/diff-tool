@@ -6,10 +6,31 @@ pub struct Diff {
     diff_two: Vec<DiffLine>,
 }
 
+impl Diff {
+    pub fn diff_one(&self) -> &Vec<DiffLine> {
+        &self.diff_one
+    }
+
+    pub fn diff_two(&self) -> &Vec<DiffLine> {
+        &self.diff_two
+    }
+}
+
 #[derive(Debug)]
-struct DiffLine {
+pub struct DiffLine {
     content: String,
     kind: DiffKind,
+}
+
+impl DiffLine {
+    fn new(content: &str, kind: DiffKind) -> Self {
+        let content = content.to_string();
+        Self { content, kind }
+    }
+
+    pub fn content(&self) -> &str {
+        &self.content
+    }
 }
 
 #[derive(Debug)]
@@ -21,12 +42,12 @@ enum DiffKind {
 }
 
 impl DiffKind {
-    fn value(&self) -> &str {
+    fn value(&self) -> char {
         match self {
-            DiffKind::Addition => "+",
-            DiffKind::Removal => "-",
-            DiffKind::Neutral => "",
-            DiffKind::Blank => "",
+            DiffKind::Addition => '+',
+            DiffKind::Removal => '-',
+            DiffKind::Neutral => ' ',
+            DiffKind::Blank => ' ',
         }
     }
 }
@@ -47,7 +68,7 @@ pub fn get_raw_diff(filename: &str) -> String {
 pub fn get_diff(diff_string: &str) -> Diff {
     let lines = diff_string.split("\n");
 
-    let diff = Diff::default();
+    let mut diff = Diff::default();
 
     let mut start = false;
     let mut additions = 0;
@@ -63,14 +84,58 @@ pub fn get_diff(diff_string: &str) -> Diff {
             continue;
         }
 
-        if line.starts_with("+") {
-            remove_first_char(line);
+        let (prefix, content) = remove_first_char(line);
+
+        match prefix {
+            '+' => {
+                diff.diff_two
+                    .push(DiffLine::new(content, DiffKind::Addition));
+                if removals > 0 {
+                    removals -= 1
+                } else {
+                    additions += 1
+                }
+            }
+
+            '-' => {
+                diff.diff_one
+                    .push(DiffLine::new(content, DiffKind::Removal));
+                removals += 1
+            }
+            _ => {
+                for _ in 0..removals {
+                    diff.diff_two.push(DiffLine::new("", DiffKind::Blank))
+                }
+
+                removals = 0;
+
+                for _ in 0..additions {
+                    diff.diff_one.push(DiffLine::new("", DiffKind::Blank))
+                }
+
+                additions = 0;
+
+                diff.diff_one
+                    .push(DiffLine::new(content, DiffKind::Neutral));
+                diff.diff_two
+                    .push(DiffLine::new(content, DiffKind::Neutral))
+            }
         }
     }
+
+    for _ in 0..removals {
+        diff.diff_two.push(DiffLine::new("", DiffKind::Blank))
+    }
+
+    for _ in 0..additions {
+        diff.diff_one.push(DiffLine::new("", DiffKind::Blank))
+    }
+
+    println!("{:?}", diff);
+    diff
 }
 
-fn remove_first_char(string: &str) -> &str {
+fn remove_first_char(string: &str) -> (char, &str) {
     let mut chars = string.chars();
-    chars.next();
-    chars.as_str()
+    (chars.next().unwrap_or(' '), chars.as_str())
 }

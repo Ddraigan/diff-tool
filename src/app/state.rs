@@ -1,11 +1,14 @@
 use std::time::Duration;
 
+use crate::git::git::Diff;
+
 pub enum AppState {
     Init,
     Initialized {
         duration: Duration,
         counter_tick: u64,
         console: Vec<String>,
+        diff: Diff,
     },
 }
 
@@ -16,13 +19,14 @@ impl Default for AppState {
 }
 
 impl AppState {
-    pub fn initialized() -> Self {
+    pub fn initialized(diff: Diff) -> Self {
         let duration = Duration::from_secs(1);
         let counter_tick = 0;
         Self::Initialized {
             duration,
             counter_tick,
             console: vec![],
+            diff,
         }
     }
 
@@ -55,6 +59,14 @@ impl AppState {
     pub fn console(&self) -> Option<&Vec<String>> {
         if let Self::Initialized { console, .. } = self {
             Some(console)
+        } else {
+            None
+        }
+    }
+
+    pub fn diff(&self) -> Option<&Diff> {
+        if let Self::Initialized { diff, .. } = self {
+            Some(diff)
         } else {
             None
         }
