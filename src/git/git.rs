@@ -1,11 +1,7 @@
-use crate::cli::cli::Arguments;
-use clap::Parser;
 use std::process::{Command, Stdio};
 
-pub fn get_raw_diff() -> String {
-    let args = Arguments::parse();
-    let filename = args.filename();
-
+/// Performs 'git diff <filename>' and returns the result as a string
+pub fn get_raw_diff(filename: &str) -> String {
     // Process git diff <filename> command and save the stdout response
     let output = Command::new("git")
         .args(["diff", filename])
@@ -13,7 +9,6 @@ pub fn get_raw_diff() -> String {
         .output()
         .expect("Failed to execute process");
 
-    // Convert stdout response to a string
-    let result = String::from_utf8(output.stdout).expect("UTF8 data to convert to string");
-    result
+    // Convert stdout response to a string and return
+    String::from_utf8(output.stdout).expect("UTF8 data to convert to string")
 }
