@@ -31,10 +31,14 @@ impl DiffLine {
     pub fn content(&self) -> &str {
         &self.content
     }
+
+    pub fn kind(&self) -> &DiffKind {
+        &self.kind
+    }
 }
 
 #[derive(Debug)]
-enum DiffKind {
+pub enum DiffKind {
     Addition,
     Removal,
     Neutral,
