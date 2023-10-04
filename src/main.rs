@@ -4,8 +4,11 @@ use anyhow::Result;
 use diff_tool::{app::app::App, git::git::get_raw_diff, start_tui};
 
 fn main() -> Result<()> {
-    get_raw_diff();
+    let diff = get_raw_diff();
+    println!("{diff}");
+
     let app = Rc::new(RefCell::new(App::new()));
     start_tui(app)?;
+
     Ok(())
 }
