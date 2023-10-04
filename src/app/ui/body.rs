@@ -1,7 +1,8 @@
+use std::cmp;
+
 use tui::{
     layout::Constraint,
     style::{Modifier, Style},
-    text::Span,
     widgets::{Block, Borders, Cell, Row, Table},
 };
 
@@ -9,11 +10,13 @@ use crate::git::git::{DiffKind, DiffLine};
 
 /// Draws the body components
 pub(crate) fn draw_body<'a>(diff: &'a Vec<DiffLine>) -> Table<'a> {
-    /* let text = Spans::from(vec![
-        Span::raw("First"),
-        Span::styled("line", Style::default().add_modifier(Modifier::ITALIC)),
-        Span::raw("."),
-    ]); */
+    let largest_line_number = diff
+        .iter()
+        .map(|x| x.line_number().unwrap_or(0))
+        .max()
+        .unwrap_or(0);
+    let length = cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
+    let length = length as u16;
 
     let lines: Vec<Row> = diff.iter().map(parse_diff_line).collect();
 
@@ -25,9 +28,10 @@ pub(crate) fn draw_body<'a>(diff: &'a Vec<DiffLine>) -> Table<'a> {
                 .border_type(tui::widgets::BorderType::Plain),
         )
         .widths(&[
+            Constraint::Length(length),
             Constraint::Percentage(2),
             Constraint::Percentage(1),
-            Constraint::Percentage(97),
+            Constraint::Percentage(95),
         ])
         .column_spacing(0)
 }
@@ -55,10 +59,16 @@ fn parse_diff_line(line: &DiffLine) -> Row {
         DiffKind::Blank => Style::default().bg(tui::style::Color::DarkGray),
     };
 
+    let line_number = match line.line_number() {
+        Some(x) => x.to_string(),
+        None => " ".to_string(),
+    };
+
     let prefix = line.kind().value();
     let content = line.content();
 
     Row::new(vec![
+        Cell::from(line_number).style(Style::default().fg(tui::style::Color::Gray)),
         Cell::from(prefix).style(prefix_style),
         Cell::from("").style(content_style),
         Cell::from(content).style(content_style),

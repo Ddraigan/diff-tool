@@ -20,12 +20,17 @@ impl Diff {
 pub struct DiffLine {
     content: String,
     kind: DiffKind,
+    line_number: Option<usize>,
 }
 
 impl DiffLine {
-    fn new(content: &str, kind: DiffKind) -> Self {
+    fn new(content: &str, kind: DiffKind, line_number: Option<usize>) -> Self {
         let content = content.to_string();
-        Self { content, kind }
+        Self {
+            content,
+            kind,
+            line_number,
+        }
     }
 
     pub fn content(&self) -> &str {
@@ -34,6 +39,10 @@ impl DiffLine {
 
     pub fn kind(&self) -> &DiffKind {
         &self.kind
+    }
+
+    pub fn line_number(&self) -> &Option<usize> {
+        &self.line_number
     }
 }
 
@@ -60,7 +69,7 @@ impl DiffKind {
 pub fn get_raw_diff(filename: &str) -> String {
     // Process git diff <filename> command and save the stdout response
     let output = Command::new("git")
-        .args(["diff", filename])
+        .args(["diff", "-U1000", filename])
         .stdout(Stdio::piped())
         .output()
         .expect("Failed to execute process");
@@ -77,6 +86,8 @@ pub fn get_diff(diff_string: &str) -> Diff {
     let mut start = false;
     let mut additions = 0;
     let mut removals = 0;
+    let mut diff_one_line = 1;
+    let mut diff_two_line = 1;
 
     for line in lines {
         if line.starts_with("@@") && line.ends_with("@@") {
@@ -92,8 +103,12 @@ pub fn get_diff(diff_string: &str) -> Diff {
 
         match prefix {
             '+' => {
-                diff.diff_two
-                    .push(DiffLine::new(content, DiffKind::Addition));
+                diff.diff_two.push(DiffLine::new(
+                    content,
+                    DiffKind::Addition,
+                    Some(diff_two_line),
+                ));
+                diff_two_line += 1;
                 if removals > 0 {
                     removals -= 1
                 } else {
@@ -102,37 +117,49 @@ pub fn get_diff(diff_string: &str) -> Diff {
             }
 
             '-' => {
-                diff.diff_one
-                    .push(DiffLine::new(content, DiffKind::Removal));
+                diff.diff_one.push(DiffLine::new(
+                    content,
+                    DiffKind::Removal,
+                    Some(diff_one_line),
+                ));
+                diff_one_line += 1;
                 removals += 1
             }
             _ => {
                 for _ in 0..removals {
-                    diff.diff_two.push(DiffLine::new("", DiffKind::Blank))
+                    diff.diff_two.push(DiffLine::new("", DiffKind::Blank, None))
                 }
 
                 removals = 0;
 
                 for _ in 0..additions {
-                    diff.diff_one.push(DiffLine::new("", DiffKind::Blank))
+                    diff.diff_one.push(DiffLine::new("", DiffKind::Blank, None))
                 }
 
                 additions = 0;
 
-                diff.diff_one
-                    .push(DiffLine::new(content, DiffKind::Neutral));
-                diff.diff_two
-                    .push(DiffLine::new(content, DiffKind::Neutral))
+                diff.diff_one.push(DiffLine::new(
+                    content,
+                    DiffKind::Neutral,
+                    Some(diff_one_line),
+                ));
+                diff_one_line += 1;
+                diff.diff_two.push(DiffLine::new(
+                    content,
+                    DiffKind::Neutral,
+                    Some(diff_two_line),
+                ));
+                diff_two_line += 1
             }
         }
     }
 
     for _ in 0..removals {
-        diff.diff_two.push(DiffLine::new("", DiffKind::Blank))
+        diff.diff_two.push(DiffLine::new("", DiffKind::Blank, None))
     }
 
     for _ in 0..additions {
-        diff.diff_one.push(DiffLine::new("", DiffKind::Blank))
+        diff.diff_one.push(DiffLine::new("", DiffKind::Blank, None))
     }
 
     println!("{:?}", diff);
