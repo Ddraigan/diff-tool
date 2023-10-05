@@ -19,11 +19,20 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(diff: Diff) -> Self {
-        let state = AppState::initialized(diff);
+    pub fn new() -> Self {
+        let state = AppState::Init;
         let actions = vec![Action::Quit, Action::Enter].into();
 
         Self { state, actions }
+    }
+
+    pub fn diff(self, diff: Diff) -> Self {
+        let state = AppState::initialized(diff);
+
+        Self {
+            state,
+            actions: self.actions,
+        }
     }
 
     /// Handle a user action

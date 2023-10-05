@@ -1,6 +1,7 @@
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout, Rect},
+    widgets::TableState,
     Frame,
 };
 
@@ -13,7 +14,7 @@ use super::{
 };
 
 /// Draws all the components
-pub fn draw<B>(rect: &mut Frame<B>, app: &App)
+pub fn draw<B>(rect: &mut Frame<B>, app: &App, mut diff_two_state: &mut TableState)
 where
     B: Backend,
 {
@@ -44,12 +45,12 @@ where
         .split(chunks[1]);
 
     // Left Diff
-    let body_left = draw_body(app.state().diff().unwrap().diff_one());
+    let body_left = draw_body(app.state().diff().unwrap().diff_one(), "Original");
     rect.render_widget(body_left, body_chunks[0]);
 
     // Right Diff
-    let body_right = draw_body(app.state().diff().unwrap().diff_two());
-    rect.render_widget(body_right, body_chunks[1]);
+    let body_right = draw_body(app.state().diff().unwrap().diff_two(), "New");
+    rect.render_stateful_widget(body_right, body_chunks[1], &mut diff_two_state);
 
     // Footer Layout (Logs & Help)
     let footer_chunks = Layout::default()

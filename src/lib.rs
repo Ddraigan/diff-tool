@@ -11,7 +11,7 @@ use app::{
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use inputs::events::{Events, InputEvent};
 use std::{cell::RefCell, io, rc::Rc, time::Duration};
-use tui::{backend::CrosstermBackend, Terminal};
+use tui::{backend::CrosstermBackend, widgets::TableState, Terminal};
 
 pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
     enable_raw_mode()?;
@@ -25,11 +25,14 @@ pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
     let tick_rate = Duration::from_millis(200);
     let events = Events::new(tick_rate);
 
+    let mut table_state = TableState::default();
+    table_state.select(Some(0));
+
     loop {
         let mut app = app.borrow_mut();
 
         // Render ui
-        terminal.draw(|rect| ui::draw(rect, &app))?;
+        terminal.draw(|rect| ui::draw(rect, &app, &mut table_state))?;
 
         // Handle inputs
         let input_result = match events.next()? {
