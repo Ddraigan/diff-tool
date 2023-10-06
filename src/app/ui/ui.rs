@@ -52,11 +52,11 @@ pub fn draw<B>(
         .split(chunks[1]);
 
     // Left Diff
-    let body_left = draw_body(&diff_one_rows, "Original");
+    let body_left = draw_body(&diff_one_rows, "Original", false);
     rect.render_stateful_widget(body_left, body_chunks[0], &mut body_left_state);
 
     // Right Diff
-    let body_right = draw_body(&diff_two_rows, "New");
+    let body_right = draw_body(&diff_two_rows, "New", true);
     rect.render_stateful_widget(body_right, body_chunks[1], &mut body_right_state);
 
     // Footer Layout (Console & Help)

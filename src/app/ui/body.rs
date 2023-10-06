@@ -8,7 +8,11 @@ use tui::{
 use crate::git::git::{DiffKind, DiffLine};
 
 /// Draws the body components
-pub(crate) fn draw_body<'a>(table_rows: &Vec<Row<'a>>, diff_title: &'a str) -> Table<'a> {
+pub(crate) fn draw_body<'a>(
+    table_rows: &Vec<Row<'a>>,
+    diff_title: &'a str,
+    is_diff_two: bool,
+) -> Table<'a> {
     /* let largest_line_number = diff
         .iter()
         .map(|x| x.line_number().unwrap_or(0))
@@ -35,11 +39,13 @@ pub(crate) fn draw_body<'a>(table_rows: &Vec<Row<'a>>, diff_title: &'a str) -> T
             Constraint::Percentage(97),
         ])
         .column_spacing(1)
-        .highlight_style(
-            tui::style::Style::default()
+        .highlight_style(if is_diff_two {
+            Style::default()
                 .fg(tui::style::Color::Magenta)
-                .add_modifier(tui::style::Modifier::BOLD),
-        )
+                .add_modifier(tui::style::Modifier::BOLD)
+        } else {
+            Style::default()
+        })
         .highlight_symbol(">>")
 }
 
