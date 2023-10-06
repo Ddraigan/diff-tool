@@ -1,8 +1,8 @@
 use tui::{
     layout::Constraint,
-    style::{Modifier, Style},
+    style::Style,
     text::Span,
-    widgets::{Block, Borders, Cell, Row, Table},
+    widgets::{Block, Borders, Row, Table},
 };
 
 /// Draws the body components
@@ -16,22 +16,12 @@ pub(crate) fn draw_body<'a>(table_rows: &Vec<Row<'a>>, diff_title: &'a str) -> T
     let length = length as u16; */
 
     Table::new(table_rows.to_owned())
-        .header(
-            Row::new(vec![
-                Cell::from(" "),
-                Cell::from(" "),
-                // Cell::from(" "),
-                Cell::from(Span::styled(
-                    diff_title,
-                    Style::default()
-                        .fg(tui::style::Color::LightCyan)
-                        .add_modifier(Modifier::UNDERLINED | Modifier::BOLD),
-                )),
-            ])
-            .bottom_margin(0),
-        )
         .block(
             Block::default()
+                .title(Span::styled(
+                    diff_title,
+                    Style::default().fg(tui::style::Color::LightCyan),
+                ))
                 .borders(Borders::ALL)
                 .style(Style::default().fg(tui::style::Color::White))
                 .border_type(tui::widgets::BorderType::Plain),
