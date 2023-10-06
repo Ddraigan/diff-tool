@@ -11,6 +11,7 @@ pub enum AppReturn {
 }
 
 /// The main application, containing the state
+#[derive(Clone)]
 pub struct App {
     /// State
     state: AppState,
@@ -21,7 +22,7 @@ pub struct App {
 impl App {
     pub fn new() -> Self {
         let state = AppState::Init;
-        let actions = vec![Action::Quit, Action::Enter].into();
+        let actions = vec![Action::Quit, Action::Enter, Action::Up, Action::Down].into();
 
         Self { state, actions }
     }
@@ -43,6 +44,8 @@ impl App {
             match action {
                 Action::Quit => AppReturn::Exit,
                 Action::Enter => AppReturn::Continue,
+                Action::Up => todo!(),
+                Action::Down => todo!(),
             }
         } else {
             self.state

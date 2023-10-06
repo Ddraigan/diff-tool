@@ -6,7 +6,7 @@ pub mod inputs;
 use anyhow::Result;
 use app::{
     app::{App, AppReturn},
-    ui::ui,
+    ui::ui::{self, parse_diff_rows},
 };
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use inputs::events::{Events, InputEvent};
@@ -28,11 +28,16 @@ pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
     let mut table_state = TableState::default();
     table_state.select(Some(0));
 
-    loop {
-        let mut app = app.borrow_mut();
+    let mut app = app.borrow_mut();
+    // todo Want this whole app clone gone
+    let app_clone = app.clone();
+    let diff_one_rows = parse_diff_rows(app_clone.state().diff().unwrap().diff_one());
+    let diff_two_rows = parse_diff_rows(app_clone.state().diff().unwrap().diff_two());
 
+    loop {
         // Render ui
-        terminal.draw(|rect| ui::draw(rect, &app, &mut table_state))?;
+        terminal
+            .draw(|rect| ui::draw(rect, &app, &mut table_state, &diff_one_rows, &diff_two_rows))?;
 
         // Handle inputs
         let input_result = match events.next()? {

@@ -1,11 +1,15 @@
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout, Rect},
-    widgets::TableState,
+    style::{Modifier, Style},
+    widgets::{Cell, Row, TableState},
     Frame,
 };
 
-use crate::app::app::App;
+use crate::{
+    app::app::App,
+    git::git::{DiffKind, DiffLine},
+};
 
 use super::{
     body::draw_body,
@@ -14,10 +18,16 @@ use super::{
 };
 
 /// Draws all the components
-pub fn draw<B>(rect: &mut Frame<B>, app: &App, mut diff_two_state: &mut TableState)
-where
+pub fn draw<B>(
+    rect: &mut Frame<B>,
+    app: &App,
+    mut diff_two_state: &mut TableState,
+    diff_one_rows: &Vec<Row>,
+    diff_two_rows: &Vec<Row>,
+) where
     B: Backend,
 {
+    // Term size
     let size = rect.size();
     check_size(&size);
 
@@ -45,21 +55,22 @@ where
         .split(chunks[1]);
 
     // Left Diff
-    let body_left = draw_body(app.state().diff().unwrap().diff_one(), "Original");
+    let body_left = draw_body(&diff_one_rows, "Original");
     rect.render_widget(body_left, body_chunks[0]);
 
     // Right Diff
-    let body_right = draw_body(app.state().diff().unwrap().diff_two(), "New");
+    let body_right = draw_body(&diff_two_rows, "New");
     rect.render_stateful_widget(body_right, body_chunks[1], &mut diff_two_state);
 
-    // Footer Layout (Logs & Help)
+    // Footer Layout (Console & Help)
     let footer_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(70), Constraint::Percentage(30)].as_ref())
         .split(chunks[2]);
 
-    let logs = draw_console(app.state());
-    rect.render_widget(logs, footer_chunks[0]);
+    // Console Section
+    let console = draw_console(app.state());
+    rect.render_widget(console, footer_chunks[0]);
 
     // Help Menu
     let help_menu = draw_help(app.actions());
@@ -74,4 +85,47 @@ fn check_size(rect: &Rect) {
     if rect.height < 28 {
         panic!("Require height >= 28, (got {})", rect.height);
     }
+}
+
+pub(crate) fn parse_diff_rows<'a>(diff_content: &'a Vec<DiffLine>) -> Vec<Row<'a>> {
+    diff_content.iter().map(parse_diff_line).collect()
+}
+
+fn parse_diff_line(line: &DiffLine) -> Row {
+    let prefix_style = match line.kind() {
+        DiffKind::Addition => Style::default()
+            .fg(tui::style::Color::Green)
+            .add_modifier(Modifier::BOLD),
+        DiffKind::Removal => Style::default()
+            .fg(tui::style::Color::Red)
+            .add_modifier(Modifier::BOLD),
+        DiffKind::Neutral => Style::default(),
+        DiffKind::Blank => Style::default(),
+    };
+
+    let content_style = match line.kind() {
+        DiffKind::Addition => Style::default()
+            .bg(tui::style::Color::Rgb(131, 242, 140))
+            .fg(tui::style::Color::Black),
+        DiffKind::Removal => Style::default()
+            .bg(tui::style::Color::LightRed)
+            .fg(tui::style::Color::Black),
+        DiffKind::Neutral => Style::default(),
+        DiffKind::Blank => Style::default().bg(tui::style::Color::DarkGray),
+    };
+
+    let line_number = match line.line_number() {
+        Some(x) => x.to_string(),
+        None => " ".to_string(),
+    };
+
+    let prefix = line.kind().value();
+    let content = line.content();
+
+    Row::new(vec![
+        Cell::from(line_number).style(Style::default().fg(tui::style::Color::Gray)),
+        Cell::from(prefix).style(prefix_style),
+        // Cell::from("").style(content_style),
+        Cell::from(content).style(content_style),
+    ])
 }

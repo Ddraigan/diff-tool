@@ -1,6 +1,6 @@
 use std::process::{Command, Stdio};
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct Diff {
     diff_one: Vec<DiffLine>,
     diff_two: Vec<DiffLine>,
@@ -16,7 +16,7 @@ impl Diff {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct DiffLine {
     content: String,
     kind: DiffKind,
@@ -46,7 +46,7 @@ impl DiffLine {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum DiffKind {
     Addition,
     Removal,

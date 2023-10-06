@@ -2,6 +2,7 @@ use std::time::Duration;
 
 use crate::git::git::Diff;
 
+#[derive(Clone)]
 pub enum AppState {
     Init,
     Initialized {
