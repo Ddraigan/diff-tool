@@ -2,12 +2,14 @@
 
 For git diffing in the terminal
 
-- Todo
+# - Todo
 
 - [ ] Diff line wrapping
-- [ ] Diff scrolling
+- [x] Diff scrolling
+- [ ] Sync diff scrolling
 - [ ] Line number column text align right
-- [X] Diff add header
+- [x] Diff add header
 - [ ] Center align header
 - [ ] Staging and Commits
 - [ ] Colour theme support
+- [ ] Fix double input bug
