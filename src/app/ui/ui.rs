@@ -1,15 +1,11 @@
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout, Rect},
-    style::{Modifier, Style},
-    widgets::{Cell, Row, TableState},
+    widgets::{Row, TableState},
     Frame,
 };
 
-use crate::{
-    app::app::App,
-    git::git::{DiffKind, DiffLine},
-};
+use crate::app::app::App;
 
 use super::{
     body::draw_body,
@@ -86,47 +82,4 @@ fn check_size(rect: &Rect) {
     if rect.height < 28 {
         panic!("Require height >= 28, (got {})", rect.height);
     }
-}
-
-pub(crate) fn parse_diff_rows<'a>(diff_content: &'a Vec<DiffLine>) -> Vec<Row<'a>> {
-    diff_content.iter().map(parse_diff_line).collect()
-}
-
-fn parse_diff_line(line: &DiffLine) -> Row {
-    let prefix_style = match line.kind() {
-        DiffKind::Addition => Style::default()
-            .fg(tui::style::Color::Green)
-            .add_modifier(Modifier::BOLD),
-        DiffKind::Removal => Style::default()
-            .fg(tui::style::Color::Red)
-            .add_modifier(Modifier::BOLD),
-        DiffKind::Neutral => Style::default(),
-        DiffKind::Blank => Style::default(),
-    };
-
-    let content_style = match line.kind() {
-        DiffKind::Addition => Style::default()
-            .bg(tui::style::Color::Rgb(131, 242, 140))
-            .fg(tui::style::Color::Black),
-        DiffKind::Removal => Style::default()
-            .bg(tui::style::Color::LightRed)
-            .fg(tui::style::Color::Black),
-        DiffKind::Neutral => Style::default(),
-        DiffKind::Blank => Style::default().bg(tui::style::Color::DarkGray),
-    };
-
-    let line_number = match line.line_number() {
-        Some(x) => x.to_string(),
-        None => " ".to_string(),
-    };
-
-    let prefix = line.kind().value();
-    let content = line.content();
-
-    Row::new(vec![
-        Cell::from(line_number).style(Style::default().fg(tui::style::Color::Gray)),
-        Cell::from(prefix).style(prefix_style),
-        // Cell::from("").style(content_style),
-        Cell::from(content).style(content_style),
-    ])
 }
