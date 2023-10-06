@@ -1,3 +1,5 @@
+use tui::widgets::{Row, TableState};
+
 use super::{
     actions::{Action, Actions},
     state::AppState,
@@ -37,15 +39,21 @@ impl App {
     }
 
     /// Handle a user action
-    pub fn do_action(&mut self, key: Key) -> AppReturn {
+    pub fn do_action(&mut self, key: Key, state: &mut TableState, rows: &Vec<Row>) -> AppReturn {
         if let Some(action) = self.actions.find(key) {
             self.state
                 .send_to_console(format!("Run action [{:?}]", action));
             match action {
                 Action::Quit => AppReturn::Exit,
                 Action::Enter => AppReturn::Continue,
-                Action::Up => todo!(),
-                Action::Down => todo!(),
+                Action::Up => {
+                    previous_row(state, rows);
+                    AppReturn::Continue
+                }
+                Action::Down => {
+                    next_row(state, rows);
+                    AppReturn::Continue
+                }
             }
         } else {
             self.state
@@ -68,4 +76,34 @@ impl App {
     pub fn state(&self) -> &AppState {
         &self.state
     }
+}
+
+fn next_row(state: &mut TableState, rows: &Vec<Row>) {
+    let i = match state.selected() {
+        Some(i) => {
+            if i >= rows.len() - 1 {
+                0
+            } else {
+                i + 1
+            }
+        }
+        None => 0,
+    };
+
+    state.select(Some(i));
+}
+
+fn previous_row(state: &mut TableState, rows: &Vec<Row>) {
+    let i = match state.selected() {
+        Some(i) => {
+            if i == 0 {
+                rows.len() - 1
+            } else {
+                i - 1
+            }
+        }
+        None => 0,
+    };
+
+    state.select(Some(i));
 }

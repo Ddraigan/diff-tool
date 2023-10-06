@@ -41,7 +41,7 @@ pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
 
         // Handle inputs
         let input_result = match events.next()? {
-            InputEvent::Input(key) => app.do_action(key),
+            InputEvent::Input(key) => app.do_action(key, &mut table_state, &diff_one_rows),
             InputEvent::Tick => app.update_on_tick(),
         };
 
