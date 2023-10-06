@@ -6,7 +6,7 @@ For git diffing in the terminal
 
 - [ ] Diff line wrapping
 - [x] Diff scrolling
-- [ ] Sync diff scrolling
+- [x] Sync diff scrolling
 - [ ] Line number column text align right
 - [x] Diff add header
 - [ ] Staging and Commits
