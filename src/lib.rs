@@ -25,8 +25,11 @@ pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
     let tick_rate = Duration::from_millis(200);
     let events = Events::new(tick_rate);
 
-    let mut table_state = TableState::default();
-    table_state.select(Some(0));
+    let mut diff_one_state = TableState::default();
+    let mut diff_two_state = TableState::default();
+
+    diff_one_state.select(Some(0));
+    diff_two_state.select(Some(0));
 
     let mut app = app.borrow_mut();
     // todo Want this whole app clone gone
@@ -36,12 +39,26 @@ pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
 
     loop {
         // Render ui
-        terminal
-            .draw(|rect| ui::draw(rect, &app, &mut table_state, &diff_one_rows, &diff_two_rows))?;
+        terminal.draw(|rect| {
+            ui::draw(
+                rect,
+                &app,
+                &mut diff_one_state,
+                &mut diff_two_state,
+                &diff_one_rows,
+                &diff_two_rows,
+            )
+        })?;
 
         // Handle inputs
         let input_result = match events.next()? {
-            InputEvent::Input(key) => app.do_action(key, &mut table_state, &diff_one_rows),
+            InputEvent::Input(key) => app.do_action(
+                key,
+                &mut diff_one_state,
+                &mut diff_two_state,
+                &diff_one_rows,
+                &diff_two_rows,
+            ),
             InputEvent::Tick => app.update_on_tick(),
         };
 

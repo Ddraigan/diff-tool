@@ -21,7 +21,8 @@ use super::{
 pub fn draw<B>(
     rect: &mut Frame<B>,
     app: &App,
-    mut diff_two_state: &mut TableState,
+    mut body_left_state: &mut TableState,
+    mut body_right_state: &mut TableState,
     diff_one_rows: &Vec<Row>,
     diff_two_rows: &Vec<Row>,
 ) where
@@ -56,11 +57,11 @@ pub fn draw<B>(
 
     // Left Diff
     let body_left = draw_body(&diff_one_rows, "Original");
-    rect.render_widget(body_left, body_chunks[0]);
+    rect.render_stateful_widget(body_left, body_chunks[0], &mut body_left_state);
 
     // Right Diff
     let body_right = draw_body(&diff_two_rows, "New");
-    rect.render_stateful_widget(body_right, body_chunks[1], &mut diff_two_state);
+    rect.render_stateful_widget(body_right, body_chunks[1], &mut body_right_state);
 
     // Footer Layout (Console & Help)
     let footer_chunks = Layout::default()

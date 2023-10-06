@@ -39,7 +39,14 @@ impl App {
     }
 
     /// Handle a user action
-    pub fn do_action(&mut self, key: Key, state: &mut TableState, rows: &Vec<Row>) -> AppReturn {
+    pub fn do_action(
+        &mut self,
+        key: Key,
+        state_one: &mut TableState,
+        state_two: &mut TableState,
+        diff_one_rows: &Vec<Row>,
+        diff_two_rows: &Vec<Row>,
+    ) -> AppReturn {
         if let Some(action) = self.actions.find(key) {
             self.state
                 .send_to_console(format!("Run action [{:?}]", action));
@@ -47,11 +54,13 @@ impl App {
                 Action::Quit => AppReturn::Exit,
                 Action::Enter => AppReturn::Continue,
                 Action::Up => {
-                    previous_row(state, rows);
+                    previous_row(state_one, diff_one_rows);
+                    previous_row(state_two, diff_two_rows);
                     AppReturn::Continue
                 }
                 Action::Down => {
-                    next_row(state, rows);
+                    next_row(state_one, diff_one_rows);
+                    next_row(state_two, diff_two_rows);
                     AppReturn::Continue
                 }
             }
