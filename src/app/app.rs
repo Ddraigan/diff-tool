@@ -48,8 +48,7 @@ impl App {
         diff_two_rows: &Vec<Row>,
     ) -> AppReturn {
         if let Some(action) = self.actions.find(key) {
-            self.state
-                .send_to_console(format!("Run action [{:?}]", action));
+            self.state.send_to_console(format!("Run action: {action}"));
             match action {
                 Action::Quit => AppReturn::Exit,
                 Action::Enter => AppReturn::Continue,

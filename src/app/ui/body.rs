@@ -13,6 +13,7 @@ pub(crate) fn draw_body<'a>(
     diff_title: &'a str,
     is_diff_two: bool,
 ) -> Table<'a> {
+    // Dynamic column width
     /* let largest_line_number = diff
         .iter()
         .map(|x| x.line_number().unwrap_or(0))
@@ -33,7 +34,7 @@ pub(crate) fn draw_body<'a>(
                 .border_type(tui::widgets::BorderType::Plain),
         )
         .widths(&[
-            Constraint::Length(4),
+            Constraint::Length(3),
             Constraint::Percentage(2),
             // Constraint::Percentage(1),
             Constraint::Percentage(97),
