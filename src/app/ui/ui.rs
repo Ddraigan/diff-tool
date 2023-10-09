@@ -51,12 +51,32 @@ pub fn draw<B>(
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(chunks[1]);
 
+    // Dynamic column width
+    let largest_line_number = app
+        .state()
+        .diff()
+        .unwrap()
+        .diff_two()
+        .iter()
+        .map(|x| x.line_number().unwrap_or(0))
+        .max()
+        .unwrap_or(0);
+    let length = std::cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
+    let col_width = length as u16;
+
+    let col_widths = [
+        Constraint::Length(col_width),
+        Constraint::Percentage(2),
+        // Constraint::Percentage(1),
+        Constraint::Percentage(97),
+    ];
+
     // Left Diff
-    let body_left = draw_body(&diff_one_rows, "Original", false);
+    let body_left = draw_body(&diff_one_rows, "Original", false, &col_widths);
     rect.render_stateful_widget(body_left, body_chunks[0], &mut body_left_state);
 
     // Right Diff
-    let body_right = draw_body(&diff_two_rows, "New", true);
+    let body_right = draw_body(&diff_two_rows, "New", true, &col_widths);
     rect.render_stateful_widget(body_right, body_chunks[1], &mut body_right_state);
 
     // Footer Layout (Console & Help)
