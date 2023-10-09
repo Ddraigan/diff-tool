@@ -13,3 +13,4 @@ For git diffing in the terminal
 - [ ] Staging and Commits
 - [ ] Colour theme support
 - [ ] (Bug) Fix double input on windows
+- [ ] Runnable from any directory (not just with a git repo)

@@ -7,8 +7,8 @@ use tui::{
 
 use crate::git::git::{DiffKind, DiffLine};
 
-/// Draws the body components
-pub(crate) fn draw_body<'a>(
+/// Draws a diff table
+pub(crate) fn draw_diff_table<'a>(
     table_rows: &Vec<Row<'a>>,
     diff_title: &'a str,
     is_diff_two: bool,

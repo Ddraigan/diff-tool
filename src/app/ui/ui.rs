@@ -8,7 +8,7 @@ use tui::{
 use crate::app::app::App;
 
 use super::{
-    body::draw_body,
+    body::draw_diff_table,
     footer::{draw_console, draw_help},
     header::draw_title,
 };
@@ -72,11 +72,11 @@ pub fn draw<B>(
     ];
 
     // Left Diff
-    let body_left = draw_body(&diff_one_rows, "Original", false, &col_widths);
+    let body_left = draw_diff_table(&diff_one_rows, "Original", false, &col_widths);
     rect.render_stateful_widget(body_left, body_chunks[0], &mut body_left_state);
 
     // Right Diff
-    let body_right = draw_body(&diff_two_rows, "New", true, &col_widths);
+    let body_right = draw_diff_table(&diff_two_rows, "New", true, &col_widths);
     rect.render_stateful_widget(body_right, body_chunks[1], &mut body_right_state);
 
     // Footer Layout (Console & Help)
