@@ -12,7 +12,7 @@ pub(crate) fn draw_body<'a>(
     table_rows: &Vec<Row<'a>>,
     diff_title: &'a str,
     is_diff_two: bool,
-    width: &'a [Constraint],
+    col_widths: &'a [Constraint],
 ) -> Table<'a> {
     Table::new(table_rows.to_owned())
         .block(
@@ -25,7 +25,7 @@ pub(crate) fn draw_body<'a>(
                 .style(Style::default().fg(tui::style::Color::White))
                 .border_type(tui::widgets::BorderType::Plain),
         )
-        .widths(&width)
+        .widths(&col_widths)
         .column_spacing(1)
         .highlight_style(if is_diff_two {
             Style::default()
