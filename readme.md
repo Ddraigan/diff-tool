@@ -11,4 +11,4 @@ For git diffing in the terminal
 - [x] Diff add header
 - [ ] Staging and Commits
 - [ ] Colour theme support
-- [ ] Fix double input bug (only on some devices?)
+- [ ] (Bug) Fix double input on windows

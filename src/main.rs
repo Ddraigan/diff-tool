@@ -13,7 +13,6 @@ fn main() -> Result<()> {
     let filename = args.filename();
 
     let diff = get_raw_diff(filename);
-    println!("{diff}");
 
     let app = Rc::new(RefCell::new(App::new().diff(get_diff(&diff))));
     start_tui(app)?;

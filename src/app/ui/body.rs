@@ -13,15 +13,6 @@ pub(crate) fn draw_body<'a>(
     diff_title: &'a str,
     is_diff_two: bool,
 ) -> Table<'a> {
-    // Dynamic column width
-    /* let largest_line_number = diff
-        .iter()
-        .map(|x| x.line_number().unwrap_or(0))
-        .max()
-        .unwrap_or(0);
-    let length = std::cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
-    let length = length as u16; */
-
     Table::new(table_rows.to_owned())
         .block(
             Block::default()
@@ -34,7 +25,7 @@ pub(crate) fn draw_body<'a>(
                 .border_type(tui::widgets::BorderType::Plain),
         )
         .widths(&[
-            Constraint::Length(3),
+            Constraint::Length(4),
             Constraint::Percentage(2),
             // Constraint::Percentage(1),
             Constraint::Percentage(97),
