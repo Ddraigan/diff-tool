@@ -14,6 +14,23 @@ impl Diff {
     pub fn diff_two(&self) -> &Vec<DiffLine> {
         &self.diff_two
     }
+
+    pub fn largest_line_number_len(&self) -> u16 {
+        let largest_line_number = std::cmp::max(
+            largest_line_number(&self.diff_one),
+            largest_line_number(&self.diff_two),
+        );
+
+        let length = std::cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
+        length.try_into().unwrap_or(4)
+    }
+}
+
+fn largest_line_number(diff: &Vec<DiffLine>) -> usize {
+    diff.iter()
+        .map(|x| x.line_number().unwrap_or(0))
+        .max()
+        .unwrap_or(0)
 }
 
 #[derive(Debug, Clone)]

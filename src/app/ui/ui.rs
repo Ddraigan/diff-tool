@@ -5,7 +5,7 @@ use tui::{
     Frame,
 };
 
-use crate::app::app::App;
+use crate::{app::app::App, git::git::Diff};
 
 use super::{
     body::draw_diff_table,
@@ -52,17 +52,11 @@ pub fn draw<B>(
         .split(chunks[1]);
 
     // Dynamic column width
-    let largest_line_number = app
+    let col_width = app
         .state()
         .diff()
-        .unwrap()
-        .diff_two()
-        .iter()
-        .map(|x| x.line_number().unwrap_or(0))
-        .max()
-        .unwrap_or(0);
-    let length = std::cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
-    let col_width = length as u16;
+        .unwrap_or(&Diff::default())
+        .largest_line_number_len();
 
     let col_widths = [
         Constraint::Length(col_width),
