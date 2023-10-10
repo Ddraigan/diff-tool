@@ -77,6 +77,23 @@ pub fn draw<B>(
     let body_right = draw_diff_table(&diff_two_rows, "New", true, &col_widths);
     rect.render_stateful_widget(body_right, body_chunks[1], &mut body_right_state);
 
+    draw_footer(chunks, rect, app)
+}
+
+/// Checks terminal size is large enough
+fn check_size(rect: &Rect) {
+    if rect.width < 52 {
+        panic!("Require width >= 52, (got {})", rect.width);
+    }
+    if rect.height < 28 {
+        panic!("Require height >= 28, (got {})", rect.height);
+    }
+}
+
+fn draw_footer<B>(chunks: std::rc::Rc<[Rect]>, rect: &mut Frame<B>, app: &App)
+where
+    B: Backend,
+{
     // Footer Layout (Console & Help)
     let footer_chunks = Layout::default()
         .direction(Direction::Horizontal)
@@ -90,14 +107,4 @@ pub fn draw<B>(
     // Help Menu
     let help_menu = draw_help(app.actions());
     rect.render_widget(help_menu, footer_chunks[1]);
-}
-
-/// Checks terminal size is large enough
-fn check_size(rect: &Rect) {
-    if rect.width < 52 {
-        panic!("Require width >= 52, (got {})", rect.width);
-    }
-    if rect.height < 28 {
-        panic!("Require height >= 28, (got {})", rect.height);
-    }
 }
