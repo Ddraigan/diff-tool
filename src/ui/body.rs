@@ -5,7 +5,7 @@ use ratatui::{
     widgets::{Block, Borders, Cell, Row, Table},
 };
 
-use crate::git::git::{DiffKind, DiffLine};
+use crate::git::{DiffKind, DiffLine};
 
 /// Draws a diff table
 pub(crate) fn draw_diff_table<'a>(

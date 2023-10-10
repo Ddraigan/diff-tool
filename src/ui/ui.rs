@@ -5,7 +5,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::{app::app::App, git::git::Diff};
+use crate::{app::App, git::Diff};
 
 use super::{
     body::draw_diff_table,

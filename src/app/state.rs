@@ -1,97 +1,40 @@
-use std::time::Duration;
-
-use crate::git::git::Diff;
+use crate::git::Diff;
 
 #[derive(Clone)]
-pub enum AppState {
-    Init,
-    Initialized {
-        duration: Duration,
-        counter_tick: u64,
-        console: Vec<String>,
-        diff: Diff,
-    },
-}
-
-impl Default for AppState {
-    fn default() -> Self {
-        Self::Init
-    }
+pub struct AppState {
+    counter_tick: u64,
+    console: Vec<String>,
+    diff: Diff,
 }
 
 impl AppState {
-    pub fn initialized(diff: Diff) -> Self {
-        let duration = Duration::from_secs(1);
+    pub fn new(diff: Diff) -> Self {
         let counter_tick = 0;
-        Self::Initialized {
-            duration,
+
+        Self {
             counter_tick,
             console: vec![],
             diff,
         }
     }
 
-    pub fn is_initialized(&self) -> bool {
-        matches!(self, &Self::Initialized { .. })
-    }
-
     pub fn incr_tick(&mut self) {
-        if let Self::Initialized { counter_tick, .. } = self {
-            *counter_tick += 1;
-        }
+        self.counter_tick += 1
     }
 
     pub fn count_tick(&self) -> Option<u64> {
-        if let Self::Initialized { counter_tick, .. } = self {
-            Some(*counter_tick)
-        } else {
-            None
-        }
-    }
-
-    pub fn duration(&self) -> Option<&Duration> {
-        if let Self::Initialized { duration, .. } = self {
-            Some(duration)
-        } else {
-            None
-        }
+        Some(self.counter_tick)
     }
 
     pub fn console(&self) -> Option<&Vec<String>> {
-        if let Self::Initialized { console, .. } = self {
-            Some(console)
-        } else {
-            None
-        }
+        Some(&self.console)
     }
 
     pub fn diff(&self) -> Option<&Diff> {
-        if let Self::Initialized { diff, .. } = self {
-            Some(diff)
-        } else {
-            None
-        }
+        Some(&self.diff)
     }
 
     pub fn send_to_console(&mut self, content: String) {
-        if let Self::Initialized { console, .. } = self {
-            Some(console.push(content));
-        }
-    }
-
-    pub fn increment_delay(&mut self) {
-        if let Self::Initialized { duration, .. } = self {
-            // Set the duration, note that the duration is in 1s..10s
-            let secs = (duration.as_secs() + 1).clamp(1, 10);
-            *duration = Duration::from_secs(secs);
-        }
-    }
-
-    pub fn decrement_delay(&mut self) {
-        if let Self::Initialized { duration, .. } = self {
-            // Set the duration, note that the duration is in 1s..10s
-            let secs = (duration.as_secs() - 1).clamp(1, 10);
-            *duration = Duration::from_secs(secs);
-        }
+        self.console.push(content)
     }
 }

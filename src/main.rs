@@ -1,9 +1,9 @@
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
-    app::app::App,
-    cli::cli::Arguments,
-    git::git::{get_diff, get_raw_diff},
+    app::App,
+    cli::Arguments,
+    git::{get_diff, get_raw_diff},
     start_tui,
 };
 
@@ -14,8 +14,7 @@ fn main() -> Result<()> {
 
     let diff = get_raw_diff(filename);
 
-    let mut app = App::new();
-    app.set_diff(get_diff(&diff));
+    let app = App::new(get_diff(&diff));
 
     start_tui(app)?;
 

@@ -5,7 +5,7 @@ pub mod inputs;
 pub mod ui;
 
 use anyhow::Result;
-use app::app::{App, AppReturn};
+use app::{App, AppReturn};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use inputs::events::{Events, InputEvent};
 use ratatui::{backend::CrosstermBackend, widgets::TableState, Terminal};
