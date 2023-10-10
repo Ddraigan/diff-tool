@@ -47,15 +47,19 @@ fn term_shutdown(terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()
     Ok(())
 }
 
+fn create_diff_state() -> TableState {
+    let mut diff_state = TableState::default();
+    diff_state.select(Some(0));
+
+    diff_state
+}
+
 fn run(terminal: &mut Terminal<CrosstermBackend<Stdout>>, app: Rc<RefCell<App>>) -> Result<()> {
     let tick_rate = Duration::from_millis(200);
     let events = Events::new(tick_rate);
 
-    let mut diff_one_state = TableState::default();
-    let mut diff_two_state = TableState::default();
-
-    diff_one_state.select(Some(0));
-    diff_two_state.select(Some(0));
+    let mut diff_one_state = create_diff_state();
+    let mut diff_two_state = create_diff_state();
 
     let mut app = app.borrow_mut();
     // todo Want this whole app clone gone
