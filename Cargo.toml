@@ -9,6 +9,7 @@ keywords = ["tui", "diff"]
 [dependencies]
 anyhow = "1.0.75"
 clap = { version = "4.4.6", features = ["derive"] }
-crossterm = { version = "0.27.0", features = ["serde"] }
+crossterm = { version = "0.27.0" }
+env_logger = "0.10.0"
 log = "0.4.20"
 ratatui = "0.23.0"

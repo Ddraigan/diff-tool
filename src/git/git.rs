@@ -179,7 +179,6 @@ pub fn get_diff(diff_string: &str) -> Diff {
         diff.diff_one.push(DiffLine::new("", DiffKind::Blank, None))
     }
 
-    println!("{:?}", diff);
     diff
 }
 

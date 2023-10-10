@@ -29,13 +29,8 @@ impl App {
         Self { state, actions }
     }
 
-    pub fn diff(self, diff: Diff) -> Self {
-        let state = AppState::initialized(diff);
-
-        Self {
-            state,
-            actions: self.actions,
-        }
+    pub fn set_diff(&mut self, diff: Diff) {
+        self.state = AppState::initialized(diff)
     }
 
     /// Handle a user action

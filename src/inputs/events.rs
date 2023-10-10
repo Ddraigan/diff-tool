@@ -38,7 +38,10 @@ impl Events {
                     }
                 }
             }
-            event_tx.send(InputEvent::Tick).unwrap();
+            match event_tx.send(InputEvent::Tick) {
+                Ok(_) => {}
+                Err(err) => log::error!("Send error: {err}"),
+            };
         });
 
         Events { rx, _tx: tx }
