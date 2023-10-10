@@ -3,7 +3,7 @@ pub mod cli;
 pub mod git;
 pub mod inputs;
 
-use anyhow::{Ok, Result};
+use anyhow::Result;
 use app::{
     app::{App, AppReturn},
     ui::{self, body::parse_diff_rows},
@@ -19,9 +19,36 @@ use std::{
 };
 
 pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
-    let mut terminal = term_setup()?;
+    let backend = CrosstermBackend::new(io::stdout());
+    let mut terminal = Terminal::new(backend)?;
 
-    let tick_rate = Duration::from_millis(250);
+    term_startup(&mut terminal)?;
+    let status = run(&mut terminal, app);
+    term_shutdown(&mut terminal)?;
+    status?;
+
+    Ok(())
+}
+
+fn term_startup(terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
+    enable_raw_mode()?;
+    crossterm::execute!(io::stdout(), crossterm::terminal::EnterAlternateScreen)?;
+    terminal.clear()?;
+    terminal.hide_cursor()?;
+    Ok(())
+}
+
+fn term_shutdown(terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
+    // Restore the terminal and close application
+    crossterm::execute!(io::stdout(), crossterm::terminal::LeaveAlternateScreen)?;
+    terminal.clear()?;
+    terminal.hide_cursor()?;
+    disable_raw_mode()?;
+    Ok(())
+}
+
+fn run(terminal: &mut Terminal<CrosstermBackend<Stdout>>, app: Rc<RefCell<App>>) -> Result<()> {
+    let tick_rate = Duration::from_millis(200);
     let events = Events::new(tick_rate);
 
     let mut diff_one_state = TableState::default();
@@ -67,26 +94,5 @@ pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
         }
     }
 
-    term_restore(&mut terminal)?;
-
-    Ok(())
-}
-
-fn term_setup() -> Result<Terminal<CrosstermBackend<Stdout>>, anyhow::Error> {
-    enable_raw_mode()?;
-    let stdout = io::stdout();
-    // execute!(stdout, EnterAlternateScreen)?;
-    let backend = CrosstermBackend::new(stdout);
-    let mut terminal = Terminal::new(backend)?;
-    terminal.clear()?;
-    terminal.hide_cursor()?;
-    Ok(terminal)
-}
-
-fn term_restore(terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
-    // Restore the terminal and close application
-    terminal.clear()?;
-    terminal.hide_cursor()?;
-    disable_raw_mode()?;
     Ok(())
 }
