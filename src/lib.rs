@@ -13,7 +13,7 @@ use std::{
     io::{self, Stdout},
     time::Duration,
 };
-use ui::{body::parse_diff_rows, ui::draw};
+use ui::{body::parse_diff_rows, draw};
 
 pub fn start_tui(app: App) -> Result<()> {
     let backend = CrosstermBackend::new(io::stdout());
@@ -59,9 +59,11 @@ fn run(terminal: &mut Terminal<CrosstermBackend<Stdout>>, mut app: App) -> Resul
     let mut diff_two_state = create_diff_state();
 
     // todo Want this whole app clone gone
-    let app_clone = app.clone();
-    let diff_one_rows = parse_diff_rows(app_clone.state().diff().unwrap().diff_one());
-    let diff_two_rows = parse_diff_rows(app_clone.state().diff().unwrap().diff_two());
+    // let app_clone = app.clone();
+    let diff_one = app.state().diff().unwrap().diff_one().clone();
+    let diff_two = app.state().diff().unwrap().diff_two().clone();
+    let diff_one_rows = parse_diff_rows(&diff_one);
+    let diff_two_rows = parse_diff_rows(&diff_two);
 
     loop {
         // Render ui
