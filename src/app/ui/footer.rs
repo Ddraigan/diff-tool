@@ -1,8 +1,8 @@
-use tui::{
+use ratatui::{
     layout::Constraint,
     style::{Color, Style},
     text::Span,
-    widgets::{Block, Borders, Cell, Row, Table},
+    widgets::{Block, BorderType, Borders, Cell, Row, Table},
 };
 
 use crate::app::{actions::Actions, state::AppState};
@@ -20,7 +20,7 @@ pub(crate) fn draw_console(state: &AppState) -> Table {
             Block::default()
                 .borders(Borders::ALL)
                 .style(Style::default().fg(Color::White))
-                .border_type(tui::widgets::BorderType::Plain),
+                .border_type(BorderType::Plain),
         )
         .widths(&[Constraint::Length(11), Constraint::Min(20)])
         .column_spacing(1)
@@ -53,7 +53,7 @@ pub(crate) fn draw_help(actions: &Actions) -> Table {
         .block(
             Block::default()
                 .borders(Borders::ALL)
-                .border_type(tui::widgets::BorderType::Plain)
+                .border_type(BorderType::Plain)
                 .title("Help"),
         )
         .widths(&[Constraint::Length(11), Constraint::Min(20)])

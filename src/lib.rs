@@ -10,13 +10,13 @@ use app::{
 };
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use inputs::events::{Events, InputEvent};
+use ratatui::{backend::CrosstermBackend, widgets::TableState, Terminal};
 use std::{
     cell::RefCell,
     io::{self, Stdout},
     rc::Rc,
     time::Duration,
 };
-use tui::{backend::CrosstermBackend, widgets::TableState, Terminal};
 
 pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
     let mut terminal = term_setup()?;

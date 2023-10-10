@@ -1,4 +1,4 @@
-use tui::widgets::{Row, TableState};
+use ratatui::widgets::{Row, TableState};
 
 use super::{
     actions::{Action, Actions},
