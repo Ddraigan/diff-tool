@@ -6,7 +6,6 @@ use diff_tool::{
     git::git::{get_diff, get_raw_diff},
     start_tui,
 };
-use std::{cell::RefCell, rc::Rc};
 
 fn main() -> Result<()> {
     env_logger::init();
@@ -17,8 +16,6 @@ fn main() -> Result<()> {
 
     let mut app = App::new();
     app.set_diff(get_diff(&diff));
-
-    let app = Rc::new(RefCell::new(app));
 
     start_tui(app)?;
 

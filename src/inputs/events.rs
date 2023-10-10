@@ -40,7 +40,7 @@ impl Events {
             }
             match event_tx.send(InputEvent::Tick) {
                 Ok(_) => {}
-                Err(err) => log::error!("Send error: {err}"),
+                Err(_) => {}
             };
         });
 
