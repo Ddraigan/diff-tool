@@ -21,7 +21,7 @@ use tui::{backend::CrosstermBackend, widgets::TableState, Terminal};
 pub fn start_tui(app: Rc<RefCell<App>>) -> Result<()> {
     let mut terminal = term_setup()?;
 
-    let tick_rate = Duration::from_millis(200);
+    let tick_rate = Duration::from_millis(250);
     let events = Events::new(tick_rate);
 
     let mut diff_one_state = TableState::default();
