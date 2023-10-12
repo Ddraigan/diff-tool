@@ -17,8 +17,8 @@ use self::{
     header::draw_title,
 };
 
-/// Draws all the components
-pub fn draw<B>(
+/// Renders all the components
+pub fn render<B>(
     rect: &mut Frame<B>,
     app: &App,
     mut body_left_state: &mut TableState,

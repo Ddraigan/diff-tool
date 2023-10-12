@@ -2,6 +2,7 @@ pub mod app;
 pub mod cli;
 pub mod git;
 pub mod inputs;
+pub mod tui;
 pub mod ui;
 
 use anyhow::Result;
@@ -10,10 +11,12 @@ use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use inputs::events::{EventHandler, InputEvent};
 use ratatui::{backend::CrosstermBackend, widgets::TableState, Terminal};
 use std::{
-    io::{self, Stdout},
+    io::{self},
     time::Duration,
 };
-use ui::{body::parse_diff_rows, draw};
+use ui::{body::parse_diff_rows, render};
+
+pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stdout>>;
 
 pub fn start_tui(app: App) -> Result<()> {
     let backend = CrosstermBackend::new(io::stdout());
@@ -27,7 +30,7 @@ pub fn start_tui(app: App) -> Result<()> {
     Ok(())
 }
 
-fn term_startup(terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
+fn term_startup(terminal: &mut CrosstermTerminal) -> Result<()> {
     enable_raw_mode()?;
     crossterm::execute!(io::stdout(), crossterm::terminal::EnterAlternateScreen)?;
     terminal.clear()?;
@@ -35,7 +38,7 @@ fn term_startup(terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()>
     Ok(())
 }
 
-fn term_shutdown(terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
+fn term_shutdown(terminal: &mut CrosstermTerminal) -> Result<()> {
     // Restore the terminal and close application
     crossterm::execute!(io::stdout(), crossterm::terminal::LeaveAlternateScreen)?;
     terminal.clear()?;
@@ -51,7 +54,7 @@ fn create_diff_state() -> TableState {
     diff_state
 }
 
-fn run(terminal: &mut Terminal<CrosstermBackend<Stdout>>, mut app: App) -> Result<()> {
+fn run(terminal: &mut CrosstermTerminal, mut app: App) -> Result<()> {
     let tick_rate = Duration::from_millis(200);
     let events = EventHandler::new(tick_rate);
 
@@ -68,7 +71,7 @@ fn run(terminal: &mut Terminal<CrosstermBackend<Stdout>>, mut app: App) -> Resul
     loop {
         // Render ui
         terminal.draw(|rect| {
-            draw(
+            render(
                 rect,
                 &app,
                 &mut diff_one_state,
