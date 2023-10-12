@@ -1,7 +1,7 @@
 use ratatui::{
     layout::Constraint,
     style::{Color, Modifier, Style},
-    text::Span,
+    text::{Line, Span},
     widgets::{Block, Borders, Cell, Row, Table},
 };
 
@@ -69,9 +69,9 @@ fn parse_diff_line(line: &DiffLine) -> Row {
     let content = line.content();
 
     Row::new(vec![
-        Cell::from(line_number).style(Style::default().fg(Color::Gray)),
+        Cell::from(Line::from(line_number).alignment(ratatui::prelude::Alignment::Right))
+            .style(Style::default().fg(Color::Gray)),
         Cell::from(prefix).style(prefix_style),
-        // Cell::from("").style(content_style),
         Cell::from(content).style(content_style),
     ])
 }

@@ -8,7 +8,7 @@ For git diffing in the terminal
 - [x] Diff scrolling
 - [x] Sync diff scrolling
 - [x] Dynamic line number width
-- [ ] Line number column text align right
+- [x] Line number column text align right
 - [x] Diff add header
 - [ ] Staging and Commits
 - [ ] Colour theme support
