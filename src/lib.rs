@@ -7,7 +7,7 @@ pub mod ui;
 use anyhow::Result;
 use app::{App, AppReturn};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
-use inputs::events::{Events, InputEvent};
+use inputs::events::{EventHandler, InputEvent};
 use ratatui::{backend::CrosstermBackend, widgets::TableState, Terminal};
 use std::{
     io::{self, Stdout},
@@ -53,7 +53,7 @@ fn create_diff_state() -> TableState {
 
 fn run(terminal: &mut Terminal<CrosstermBackend<Stdout>>, mut app: App) -> Result<()> {
     let tick_rate = Duration::from_millis(200);
-    let events = Events::new(tick_rate);
+    let events = EventHandler::new(tick_rate);
 
     let mut diff_one_state = create_diff_state();
     let mut diff_two_state = create_diff_state();

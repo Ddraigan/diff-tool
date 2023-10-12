@@ -15,13 +15,13 @@ pub enum InputEvent {
 
 /// A small event handler that wrap crossterm input and tick event. Each event
 /// type is handled in its own thread and returned to a common `Receiver`
-pub struct Events {
+pub struct EventHandler {
     rx: Receiver<InputEvent>,
     // Need to be kept around to prevent disposing the sender side.
     _tx: Sender<InputEvent>,
 }
 
-impl Events {
+impl EventHandler {
     /// Constructs an new instance of `Events` with the default config.
     /// mpsc setup
     pub fn new(tick_rate: Duration) -> Self {
@@ -44,7 +44,7 @@ impl Events {
             };
         });
 
-        Events { rx, _tx: tx }
+        EventHandler { rx, _tx: tx }
     }
 
     /// Attempts to read an event.
