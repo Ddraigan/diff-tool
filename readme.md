@@ -14,3 +14,4 @@ For git diffing in the terminal
 - [ ] Colour theme support
 - [x] (Bug) Fix double input on windows
 - [ ] Runnable from any directory (not just with a git repo)
+- [ ] Fix run action display
