@@ -1,8 +1,13 @@
 [package]
-name = "diff-tool"
+name = "gdiff"
 version = "0.1.0"
 edition = "2021"
-keywords = ["tui", "diff"]
+license = "Apache-2.0"
+readme = "readme.md"
+homepage = "https://github.com/Ddraigan/diff-tool"
+repository = "https://github.com/Ddraigan/diff-tool"
+keywords = ["tui", "diff", "cli", "git"]
+categories = ["command-line-utility"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
