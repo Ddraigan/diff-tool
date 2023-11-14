@@ -4,7 +4,6 @@ For git diffing in the terminal
 
 # Todo
 
-- [ ] Remove need to cd to git repo
 - [ ] Diff line wrapping
 - [x] Diff scrolling
 - [x] Sync diff scrolling
