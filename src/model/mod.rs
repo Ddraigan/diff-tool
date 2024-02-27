@@ -1,11 +1,11 @@
 #[derive(Debug, Default)]
 pub struct Model {
-    line_count: i32,
+    line_count: u32,
     running_state: RunningState,
 }
 
 impl Model {
-    pub fn line_count(&self) -> i32 {
+    pub fn line_count(&self) -> u32 {
         self.line_count
     }
 
@@ -19,6 +19,10 @@ impl Model {
 
     pub fn line_count_reset(&mut self) {
         self.line_count = 0
+    }
+
+    pub fn line_count_nothing(&mut self) {
+        self.line_count = self.line_count
     }
 
     pub fn running_state(&self) -> &RunningState {

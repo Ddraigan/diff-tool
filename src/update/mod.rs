@@ -1,28 +1,36 @@
+mod event;
+
 use crate::model::Model;
 
 pub enum Message {
-    IncrementLine,
-    DecrementLine,
+    Increment,
+    Decrement,
     Reset,
+    Nothing,
     Quit,
 }
 
 pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
     match msg {
-        Message::IncrementLine => {
+        Message::Increment => {
             model.line_count_incr();
+            // This will be the max lines in the diff
             if model.line_count() > 50 {
-                return Some(Message::Reset);
+                return Some(Message::Nothing);
             }
         }
-        Message::DecrementLine => {
+        Message::Decrement => {
             model.line_count_decr();
-            if model.line_count() < -50 {
-                return Some(Message::Reset);
+            if model.line_count() == 0 {
+                return Some(Message::Nothing);
             }
         }
         Message::Reset => model.line_count_reset(),
-        Message::Quit => model.set_done(),
+        Message::Nothing => model.line_count_nothing(),
+        Message::Quit => {
+            // Handle some exit stuff
+            model.set_done()
+        }
     }
 
     None
