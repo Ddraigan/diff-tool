@@ -2,23 +2,23 @@ use std::process::{Command, Stdio};
 
 #[derive(Default, Debug, Clone)]
 pub struct Diff {
-    diff_one: Vec<DiffLine>,
-    diff_two: Vec<DiffLine>,
+    old_diff: Vec<DiffLine>,
+    current_diff: Vec<DiffLine>,
 }
 
 impl Diff {
     pub fn diff_one(&self) -> &Vec<DiffLine> {
-        &self.diff_one
+        &self.old_diff
     }
 
     pub fn diff_two(&self) -> &Vec<DiffLine> {
-        &self.diff_two
+        &self.current_diff
     }
 
-    pub fn largest_line_number_len(&self) -> u16 {
+    pub fn largest_line_number_len(&self) -> u32 {
         let largest_line_number = std::cmp::max(
-            largest_line_number(&self.diff_one),
-            largest_line_number(&self.diff_two),
+            largest_line_number(&self.old_diff),
+            largest_line_number(&self.current_diff),
         );
 
         let length = std::cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
@@ -134,7 +134,7 @@ pub fn get_diff(diff_string: &str) -> Diff {
 
         match prefix {
             '+' => {
-                diff.diff_two.push(DiffLine::new(
+                diff.current_diff.push(DiffLine::new(
                     content,
                     DiffKind::Addition,
                     Some(diff_two_line),
@@ -148,7 +148,7 @@ pub fn get_diff(diff_string: &str) -> Diff {
             }
 
             '-' => {
-                diff.diff_one.push(DiffLine::new(
+                diff.old_diff.push(DiffLine::new(
                     content,
                     DiffKind::Removal,
                     Some(diff_one_line),
@@ -158,24 +158,25 @@ pub fn get_diff(diff_string: &str) -> Diff {
             }
             _ => {
                 for _ in 0..removals {
-                    diff.diff_two.push(DiffLine::new("", DiffKind::Blank, None))
+                    diff.current_diff
+                        .push(DiffLine::new("", DiffKind::Blank, None))
                 }
 
                 removals = 0;
 
                 for _ in 0..additions {
-                    diff.diff_one.push(DiffLine::new("", DiffKind::Blank, None))
+                    diff.old_diff.push(DiffLine::new("", DiffKind::Blank, None))
                 }
 
                 additions = 0;
 
-                diff.diff_one.push(DiffLine::new(
+                diff.old_diff.push(DiffLine::new(
                     content,
                     DiffKind::Neutral,
                     Some(diff_one_line),
                 ));
                 diff_one_line += 1;
-                diff.diff_two.push(DiffLine::new(
+                diff.current_diff.push(DiffLine::new(
                     content,
                     DiffKind::Neutral,
                     Some(diff_two_line),
@@ -186,11 +187,12 @@ pub fn get_diff(diff_string: &str) -> Diff {
     }
 
     for _ in 0..removals {
-        diff.diff_two.push(DiffLine::new("", DiffKind::Blank, None))
+        diff.current_diff
+            .push(DiffLine::new("", DiffKind::Blank, None))
     }
 
     for _ in 0..additions {
-        diff.diff_one.push(DiffLine::new("", DiffKind::Blank, None))
+        diff.old_diff.push(DiffLine::new("", DiffKind::Blank, None))
     }
 
     diff

@@ -14,8 +14,7 @@ pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
     match msg {
         Message::Increment => {
             model.line_count_incr();
-            // This will be the max lines in the diff
-            if model.line_count() > 50 {
+            if model.max_content() {
                 return Some(Message::Nothing);
             }
         }

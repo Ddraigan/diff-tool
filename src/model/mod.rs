@@ -1,10 +1,24 @@
+use crate::git::Diff;
+
 #[derive(Debug, Default)]
 pub struct Model {
     line_count: u32,
     running_state: RunningState,
+    diff: Diff,
 }
 
 impl Model {
+    pub fn max_content(&self) -> bool {
+        if self.line_count != self.diff.largest_line_number_len() {
+            return false;
+        }
+        true
+    }
+
+    pub fn diff(&self) -> &Diff {
+        &self.diff
+    }
+
     pub fn line_count(&self) -> u32 {
         self.line_count
     }
