@@ -1,17 +1,17 @@
 use std::process::{Command, Stdio};
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug)]
 pub struct Diff {
     old_diff: Vec<DiffLine>,
     current_diff: Vec<DiffLine>,
 }
 
 impl Diff {
-    pub fn diff_one(&self) -> &Vec<DiffLine> {
+    pub fn diff_one(&self) -> &[DiffLine] {
         &self.old_diff
     }
 
-    pub fn diff_two(&self) -> &Vec<DiffLine> {
+    pub fn diff_two(&self) -> &[DiffLine] {
         &self.current_diff
     }
 
@@ -26,7 +26,7 @@ impl Diff {
     }
 }
 
-fn largest_line_number(diff: &Vec<DiffLine>) -> usize {
+fn largest_line_number(diff: &[DiffLine]) -> usize {
     diff.iter()
         .map(|x| x.line_number().unwrap_or(0))
         .max()
@@ -82,10 +82,7 @@ impl DiffKind {
     }
 }
 
-// git -C .\Code\diff-tool\ diff testfile.txt (need to fit this into the command to diff from
-// any directory)
-
-/// Performs 'git diff <filename>' and returns the result as a string
+/// Performs 'git diff -U1000 <filename>' or 'git -C [path] diff -U1000 <filename>' and returns the result as a string
 pub fn get_raw_diff(path: &str, dir_flag: bool) -> String {
     let args = if !dir_flag {
         ["diff", "-U1000", path, "", ""]

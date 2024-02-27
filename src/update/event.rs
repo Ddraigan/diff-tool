@@ -3,11 +3,9 @@ use std::time::Duration;
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind};
 
-use crate::model::Model;
-
 use super::Message;
 
-fn handle_event(_: &Model) -> Result<Option<Message>> {
+fn handle_event() -> Result<Option<Message>> {
     if event::poll(Duration::from_millis(250))? {
         if let Event::Key(key) = event::read()? {
             if key.kind == KeyEventKind::Press {

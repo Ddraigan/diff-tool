@@ -1,13 +1,51 @@
-use crate::git::Diff;
+use ratatui::widgets::TableState;
 
-#[derive(Debug, Default)]
+use crate::git::{get_diff, get_raw_diff, Diff};
+
+#[derive(Debug)]
 pub struct Model {
     line_count: u32,
     running_state: RunningState,
     diff: Diff,
+    state: State,
+}
+
+#[derive(Debug)]
+pub struct State {
+    old_diff: TableState,
+    current_diff: TableState,
+}
+
+impl State {
+    fn new() -> Self {
+        let mut old_diff = TableState::default();
+        let mut current_diff = TableState::default();
+
+        old_diff.select(Some(0));
+        current_diff.select(Some(0));
+
+        Self {
+            old_diff,
+            current_diff,
+        }
+    }
 }
 
 impl Model {
+    pub fn new(diff: Diff) -> Self {
+        let line_count = u32::default();
+        let running_state = RunningState::default();
+        let diff = diff;
+        let state = State::new();
+
+        Self {
+            line_count,
+            running_state,
+            diff,
+            state,
+        }
+    }
+
     pub fn max_content(&self) -> bool {
         if self.line_count != self.diff.largest_line_number_len() {
             return false;
