@@ -90,7 +90,11 @@ pub fn get_raw_diff(path: &str, dir_flag: bool) -> String {
     let args = if !dir_flag {
         ["diff", "-U1000", path, "", ""]
     } else {
-        let (path, filename) = path.rsplit_once('\\').expect("Path to be valid");
+        #[cfg(target_os = "windows")]
+        let delimiter = '\\';
+        #[cfg(not(target_os = "windows"))]
+        let delimiter = '/';
+        let (path, filename) = path.rsplit_once(delimiter).expect("Path to be valid");
         ["-C", path, "diff", "-U1000", filename]
     };
 

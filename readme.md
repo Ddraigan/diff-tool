@@ -12,6 +12,5 @@ For git diffing in the terminal
 - [x] Diff add header
 - [ ] Staging and Commits
 - [ ] Colour theme support
-- [x] (Bug) Fix double input on windows
 - [x] Runnable from any directory (not just with a git repo)
-- [ ] Fix run action display
+- [ ] (Bug) Fix run action display log
