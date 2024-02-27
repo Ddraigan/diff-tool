@@ -10,9 +10,9 @@ use diff_tool::{
 fn main() -> Result<()> {
     env_logger::init();
     let args = Arguments::parse();
-    let filename = args.filename();
+    let path = args.path();
 
-    let diff = get_raw_diff(filename);
+    let diff = get_raw_diff(path, args.change_dir());
 
     let app = App::new(get_diff(&diff));
 

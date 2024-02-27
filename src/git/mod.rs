@@ -82,11 +82,21 @@ impl DiffKind {
     }
 }
 
+// git -C .\Code\diff-tool\ diff testfile.txt (need to fit this into the command to diff from
+// any directory)
+
 /// Performs 'git diff <filename>' and returns the result as a string
-pub fn get_raw_diff(filename: &str) -> String {
+pub fn get_raw_diff(path: &str, dir_flag: bool) -> String {
+    let args = if !dir_flag {
+        ["diff", "-U1000", path, "", ""]
+    } else {
+        let (path, filename) = path.rsplit_once('\\').expect("Path to be valid");
+        ["-C", path, "diff", "-U1000", filename]
+    };
+
     // Process git diff <filename> command and save the stdout response
     let output = Command::new("git")
-        .args(["diff", "-U1000", filename])
+        .args(args)
         .stdout(Stdio::piped())
         .output()
         .expect("Failed to execute process");

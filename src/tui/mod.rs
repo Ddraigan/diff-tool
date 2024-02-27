@@ -38,6 +38,7 @@ impl Tui {
         self.terminal.clear()?;
         Ok(())
     }
+
     /// Draw the terminal interface by rendering the widgets
     pub fn draw<'a>(
         &mut self,
