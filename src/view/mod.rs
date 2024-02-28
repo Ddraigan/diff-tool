@@ -4,7 +4,6 @@ pub mod header;
 
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
-    widgets::Row,
     Frame,
 };
 
@@ -13,13 +12,13 @@ use crate::model::Model;
 use self::{body::draw_diff_table, header::draw_title};
 
 /// Renders all the components
-pub fn view(model: &mut Model, f: &mut Frame, old_diff_rows: &[Row], current_diff_rows: &[Row]) {
+pub fn view(model: &mut Model, f: &mut Frame) {
     // Term size
     let size = f.size();
     check_size(&size);
 
     // Vertical Layout
-    let chunks = Layout::default()
+    let area = Layout::default()
         .direction(Direction::Vertical)
         .constraints(
             [
@@ -33,23 +32,19 @@ pub fn view(model: &mut Model, f: &mut Frame, old_diff_rows: &[Row], current_dif
 
     // Title at top
     let title = draw_title();
-    f.render_widget(title, chunks[0]);
+    f.render_widget(title, area[0]);
 
     // Body Layout (Left Diff & Right Diff)
-    let body_chunks = Layout::default()
+    let body_area = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
-        .split(chunks[1]);
+        .split(area[1]);
 
     // Left Diff
-    let body_left = draw_diff_table(&model, old_diff_rows, "Original", false);
-    let old_diff_state = model.old_diff_state_mut();
-    f.render_stateful_widget(body_left, body_chunks[0], old_diff_state);
+    draw_diff_table(model, f, body_area[0], "Original", false);
 
     // Right Diff
-    let body_right = draw_diff_table(&model, current_diff_rows, "New", true);
-    let current_diff_state = model.current_diff_state_mut();
-    f.render_stateful_widget(body_right, body_chunks[1], current_diff_state);
+    draw_diff_table(model, f, body_area[1], "New", true);
 
     // draw_footer(chunks, f, model)
 }

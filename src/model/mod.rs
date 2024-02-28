@@ -1,3 +1,5 @@
+use std::cell::RefCell;
+
 use ratatui::widgets::TableState;
 
 use crate::git::{Diff, DiffLine};
@@ -7,20 +9,20 @@ pub struct Model {
     line_count: u32,
     running_state: RunningState,
     diff: Diff,
-    state: State,
+    pub state: State,
 }
 
 #[derive(Debug)]
 pub struct State {
-    old_diff: TableState,
-    current_diff: TableState,
+    pub old_diff: RefCell<TableState>,
+    pub current_diff: RefCell<TableState>,
 }
 
 impl Default for State {
     fn default() -> Self {
         Self {
-            old_diff: TableState::default().with_selected(0),
-            current_diff: TableState::default().with_selected(0),
+            old_diff: RefCell::from(TableState::default().with_selected(0)),
+            current_diff: RefCell::from(TableState::default().with_selected(0)),
         }
     }
 }
@@ -47,20 +49,16 @@ impl Model {
         true
     }
 
+    // pub fn current_state_get_mut(&self) {
+    //
+    // }
+
     pub fn old_diff(&self) -> &[DiffLine] {
         self.diff.old_diff()
     }
 
     pub fn current_diff(&self) -> &[DiffLine] {
         self.diff.current_diff()
-    }
-
-    pub fn old_diff_state_mut(&mut self) -> &mut TableState {
-        &mut self.state.old_diff
-    }
-
-    pub fn current_diff_state_mut(&mut self) -> &mut TableState {
-        &mut self.state.current_diff
     }
 
     pub fn diff(&self) -> &Diff {

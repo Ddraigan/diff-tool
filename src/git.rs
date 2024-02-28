@@ -138,6 +138,10 @@ impl DiffLine {
         }
     }
 
+    // pub fn ref_array(&self) -> [&String; 3] {
+    //     [&self.content, &self.kind, &self.line_number]
+    // }
+
     pub fn content(&self) -> &str {
         &self.content
     }

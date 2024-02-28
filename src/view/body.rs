@@ -1,8 +1,9 @@
 use ratatui::{
-    layout::Constraint,
+    layout::{Constraint, Rect},
     style::{Color, Modifier, Style},
     text::{Line, Span},
     widgets::{Block, Borders, Cell, Row, Table},
+    Frame,
 };
 
 use crate::{
@@ -11,22 +12,29 @@ use crate::{
 };
 
 /// Draws a diff table
-pub(crate) fn draw_diff_table<'a>(
+pub(crate) fn draw_diff_table(
     model: &Model,
-    table_rows: &[Row],
-    diff_title: &'a str,
+    f: &mut Frame,
+    area: Rect,
+    diff_title: &str,
     is_current_diff: bool,
-) -> Table<'a> {
-    // Dynamic column width
-    let col_width = model.diff().largest_line_number_len();
+) {
+    let diff = if is_current_diff {
+        model.current_diff()
+    } else {
+        model.old_diff()
+    };
 
+    let rows = parse_diff_rows(diff);
+
+    // Dynamic column width
     let col_widths = [
-        Constraint::Length(col_width),
+        Constraint::Length(model.diff().largest_line_number_len()),
         Constraint::Percentage(2),
         Constraint::Percentage(97),
     ];
 
-    Table::new(table_rows, col_widths)
+    let table = Table::new(rows, col_widths)
         .block(
             Block::default()
                 .title(Span::styled(
@@ -45,7 +53,15 @@ pub(crate) fn draw_diff_table<'a>(
         } else {
             Style::default()
         })
-        .highlight_symbol(">>")
+        .highlight_symbol(">>");
+
+    let mut state = if is_current_diff {
+        model.state.current_diff.borrow_mut()
+    } else {
+        model.state.old_diff.borrow_mut()
+    };
+
+    f.render_stateful_widget(table, area, &mut state);
 }
 
 pub fn parse_diff_rows<'a>(diff_content: &'a [DiffLine]) -> Vec<Row<'a>> {
