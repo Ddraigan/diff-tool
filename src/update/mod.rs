@@ -3,8 +3,10 @@ pub mod event;
 use crate::model::Model;
 
 pub enum Message {
-    Increment,
-    Decrement,
+    RowUp,
+    RowDown,
+    TopRow,
+    BottomRow,
     Reset,
     Nothing,
     Quit,
@@ -12,20 +14,12 @@ pub enum Message {
 
 pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
     match msg {
-        Message::Increment => {
-            model.line_count_incr();
-            if model.max_content() {
-                return Some(Message::Nothing);
-            }
-        }
-        Message::Decrement => {
-            model.line_count_decr();
-            if model.line_count() == 0 {
-                return Some(Message::Nothing);
-            }
-        }
-        Message::Reset => model.line_count_reset(),
-        Message::Nothing => model.line_count_nothing(),
+        Message::RowUp => model.previous_row(),
+        Message::RowDown => model.next_row(),
+        Message::TopRow => return Some(Message::Reset),
+        Message::BottomRow => {}
+        Message::Reset => model.reset_row_state(),
+        Message::Nothing => {}
         Message::Quit => {
             // Handle some exit stuff
             model.set_done()

@@ -20,8 +20,10 @@ pub fn handle_event(_: &Model) -> Result<Option<Message>> {
 
 fn handle_key(key: event::KeyEvent) -> Option<Message> {
     match key.code {
-        KeyCode::Char('j') => Some(Message::Increment),
-        KeyCode::Char('k') => Some(Message::Decrement),
+        KeyCode::Char('k') => Some(Message::RowUp),
+        KeyCode::Char('j') => Some(Message::RowDown),
+        KeyCode::Char('g') => Some(Message::TopRow),
+        KeyCode::Char('G') => Some(Message::BottomRow),
         KeyCode::Char('q') => Some(Message::Quit),
         _ => None,
     }

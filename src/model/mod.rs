@@ -6,7 +6,6 @@ use crate::git::{Diff, DiffLine};
 
 #[derive(Debug)]
 pub struct Model {
-    line_count: u32,
     running_state: RunningState,
     diff: Diff,
     state: State,
@@ -30,13 +29,11 @@ impl Default for State {
 
 impl Model {
     pub fn new(diff_string: &str) -> Self {
-        let line_count = u32::default();
         let running_state = RunningState::default();
         let diff = Diff::parse_diff(diff_string);
         let state = State::default();
 
         Self {
-            line_count,
             running_state,
             diff,
             state,
@@ -51,13 +48,6 @@ impl Model {
         &self.state.current_diff
     }
 
-    pub fn max_content(&self) -> bool {
-        if self.line_count != self.diff.largest_line_number_len().into() {
-            return false;
-        }
-        true
-    }
-
     pub fn old_diff(&self) -> &[DiffLine] {
         self.diff.old_diff()
     }
@@ -70,26 +60,6 @@ impl Model {
         &self.diff
     }
 
-    pub fn line_count(&self) -> u32 {
-        self.line_count
-    }
-
-    pub fn line_count_incr(&mut self) {
-        self.line_count += 1
-    }
-
-    pub fn line_count_decr(&mut self) {
-        self.line_count -= 1
-    }
-
-    pub fn line_count_reset(&mut self) {
-        self.line_count = 0
-    }
-
-    pub fn line_count_nothing(&mut self) {
-        self.line_count = self.line_count
-    }
-
     pub fn running_state(&self) -> &RunningState {
         &self.running_state
     }
@@ -100,6 +70,65 @@ impl Model {
 
     pub fn set_done(&mut self) {
         self.running_state = RunningState::Done
+    }
+
+    pub fn next_row(&self) {
+        let i = match self.state.old_diff.borrow().selected() {
+            Some(i) => {
+                if i >= self.diff.old_diff().len() - 1 {
+                    0
+                } else {
+                    i + 1
+                }
+            }
+            None => 0,
+        };
+
+        let j = match self.state.current_diff.borrow().selected() {
+            Some(j) => {
+                if j >= self.diff.current_diff().len() - 1 {
+                    0
+                } else {
+                    j + 1
+                }
+            }
+            None => 0,
+        };
+
+        self.state.old_diff.borrow_mut().select(Some(i));
+        self.state.current_diff.borrow_mut().select(Some(j));
+    }
+
+    pub fn previous_row(&self) {
+        let i = match self.state.old_diff.borrow().selected() {
+            Some(i) => {
+                if i == 0 {
+                    self.diff.old_diff().len() - 1
+                } else {
+                    i - 1
+                }
+            }
+            None => 0,
+        };
+
+        let j = match self.state.current_diff.borrow().selected() {
+            Some(j) => {
+                if j == 0 {
+                    self.diff.current_diff().len() - 1
+                } else {
+                    j - 1
+                }
+            }
+            None => 0,
+        };
+
+        self.state.old_diff.borrow_mut().select(Some(i));
+        self.state.current_diff.borrow_mut().select(Some(j));
+    }
+
+    pub fn reset_row_state(&self) {
+        self.state.old_diff.borrow_mut().select(Some(0));
+        self.state.current_diff.borrow_mut().select(Some(0));
     }
 }
 
