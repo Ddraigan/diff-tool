@@ -15,7 +15,7 @@ impl Diff {
         &self.current_diff
     }
 
-    pub fn largest_line_number_len(&self) -> u32 {
+    pub fn largest_line_number_len(&self) -> u16 {
         let largest_line_number = std::cmp::max(
             largest_line_number(&self.old_diff),
             largest_line_number(&self.current_diff),

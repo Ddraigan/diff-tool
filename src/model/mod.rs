@@ -53,6 +53,14 @@ impl Model {
         true
     }
 
+    pub fn old_diff_state_mut(&mut self) -> &mut TableState {
+        &mut self.state.old_diff
+    }
+
+    pub fn current_diff_state_mut(&mut self) -> &mut TableState {
+        &mut self.state.current_diff
+    }
+
     pub fn diff(&self) -> &Diff {
         &self.diff
     }
