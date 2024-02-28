@@ -16,27 +16,21 @@ pub struct State {
     current_diff: TableState,
 }
 
-impl State {
-    fn new() -> Self {
-        let mut old_diff = TableState::default();
-        let mut current_diff = TableState::default();
-
-        old_diff.select(Some(0));
-        current_diff.select(Some(0));
-
+impl Default for State {
+    fn default() -> Self {
         Self {
-            old_diff,
-            current_diff,
+            old_diff: TableState::default().with_selected(0),
+            current_diff: TableState::default().with_selected(0),
         }
     }
 }
 
 impl Model {
-    pub fn new(diff: Diff) -> Self {
+    pub fn new(diff_string: &str) -> Self {
         let line_count = u32::default();
         let running_state = RunningState::default();
-        let diff = diff;
-        let state = State::new();
+        let diff = Diff::parse_diff(diff_string);
+        let state = State::default();
 
         Self {
             line_count,

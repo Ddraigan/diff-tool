@@ -13,7 +13,7 @@ use crate::{
 /// Draws a diff table
 pub(crate) fn draw_diff_table<'a>(
     model: &Model,
-    table_rows: Vec<Row<'a>>,
+    table_rows: &[Row],
     diff_title: &'a str,
     is_current_diff: bool,
 ) -> Table<'a> {
@@ -26,7 +26,7 @@ pub(crate) fn draw_diff_table<'a>(
         Constraint::Percentage(97),
     ];
 
-    Table::new(table_rows.to_owned(), col_widths)
+    Table::new(table_rows, col_widths)
         .block(
             Block::default()
                 .title(Span::styled(
@@ -48,7 +48,7 @@ pub(crate) fn draw_diff_table<'a>(
         .highlight_symbol(">>")
 }
 
-pub(crate) fn parse_diff_rows<'a>(diff_content: &'a [DiffLine]) -> Vec<Row<'a>> {
+pub fn parse_diff_rows<'a>(diff_content: &'a [DiffLine]) -> Vec<Row<'a>> {
     diff_content.iter().map(parse_diff_line).collect()
 }
 

@@ -1,4 +1,4 @@
-mod event;
+pub mod event;
 
 use crate::model::Model;
 

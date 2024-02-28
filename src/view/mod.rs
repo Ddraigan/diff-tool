@@ -10,18 +10,10 @@ use ratatui::{
 
 use crate::model::Model;
 
-use self::{
-    body::{draw_diff_table, parse_diff_rows},
-    header::draw_title,
-};
+use self::{body::draw_diff_table, header::draw_title};
 
 /// Renders all the components
-pub fn view<B>(
-    f: &mut Frame,
-    model: &mut Model,
-    diff_one_rows: &Vec<Row>,
-    diff_two_rows: &Vec<Row>,
-) {
+pub fn view(model: &mut Model, f: &mut Frame, old_diff_rows: &[Row], current_diff_rows: &[Row]) {
     // Term size
     let size = f.size();
     check_size(&size);
@@ -50,14 +42,11 @@ pub fn view<B>(
         .split(chunks[1]);
 
     // Left Diff
-    let diff_lines = model.old_diff();
-    let old_diff_rows = parse_diff_rows(diff_lines);
     let body_left = draw_diff_table(&model, old_diff_rows, "Original", false);
     let old_diff_state = model.old_diff_state_mut();
     f.render_stateful_widget(body_left, body_chunks[0], old_diff_state);
 
     // Right Diff
-    let current_diff_rows = parse_diff_rows(model.current_diff());
     let body_right = draw_diff_table(&model, current_diff_rows, "New", true);
     let current_diff_state = model.current_diff_state_mut();
     f.render_stateful_widget(body_right, body_chunks[1], current_diff_state);
