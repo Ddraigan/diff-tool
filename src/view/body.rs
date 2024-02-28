@@ -13,7 +13,7 @@ use crate::{
 /// Draws a diff table
 pub(crate) fn draw_diff_table<'a>(
     model: &Model,
-    table_rows: &Vec<Row<'a>>,
+    table_rows: Vec<Row<'a>>,
     diff_title: &'a str,
     is_current_diff: bool,
 ) -> Table<'a> {
@@ -48,7 +48,7 @@ pub(crate) fn draw_diff_table<'a>(
         .highlight_symbol(">>")
 }
 
-pub(crate) fn parse_diff_rows<'a>(diff_content: &'a Vec<DiffLine>) -> Vec<Row<'a>> {
+pub(crate) fn parse_diff_rows<'a>(diff_content: &'a [DiffLine]) -> Vec<Row<'a>> {
     diff_content.iter().map(parse_diff_line).collect()
 }
 
@@ -79,7 +79,7 @@ fn parse_diff_line(line: &DiffLine) -> Row {
     let prefix = line.kind().value();
     let content = line.content();
 
-    Row::new(vec![
+    Row::new([
         Cell::from(Line::from(line_number).alignment(ratatui::prelude::Alignment::Right))
             .style(Style::default().fg(Color::Gray)),
         Cell::from(prefix).style(prefix_style),

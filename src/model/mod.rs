@@ -1,6 +1,6 @@
 use ratatui::widgets::TableState;
 
-use crate::git::{get_diff, get_raw_diff, Diff};
+use crate::git::{Diff, DiffLine};
 
 #[derive(Debug)]
 pub struct Model {
@@ -47,10 +47,18 @@ impl Model {
     }
 
     pub fn max_content(&self) -> bool {
-        if self.line_count != self.diff.largest_line_number_len() {
+        if self.line_count != self.diff.largest_line_number_len().into() {
             return false;
         }
         true
+    }
+
+    pub fn old_diff(&self) -> &[DiffLine] {
+        self.diff.old_diff()
+    }
+
+    pub fn current_diff(&self) -> &[DiffLine] {
+        self.diff.current_diff()
     }
 
     pub fn old_diff_state_mut(&mut self) -> &mut TableState {

@@ -5,7 +5,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEventKind};
 
 use super::Message;
 
-fn handle_event() -> Result<Option<Message>> {
+pub fn handle_event() -> Result<Option<Message>> {
     if event::poll(Duration::from_millis(250))? {
         if let Event::Key(key) = event::read()? {
             if key.kind == KeyEventKind::Press {

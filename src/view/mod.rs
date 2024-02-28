@@ -10,7 +10,10 @@ use ratatui::{
 
 use crate::model::Model;
 
-use self::{body::draw_diff_table, header::draw_title};
+use self::{
+    body::{draw_diff_table, parse_diff_rows},
+    header::draw_title,
+};
 
 /// Renders all the components
 pub fn view<B>(
@@ -47,16 +50,19 @@ pub fn view<B>(
         .split(chunks[1]);
 
     // Left Diff
-    let body_left = draw_diff_table(&model, &diff_one_rows, "Original", false);
+    let diff_lines = model.old_diff();
+    let old_diff_rows = parse_diff_rows(diff_lines);
+    let body_left = draw_diff_table(&model, old_diff_rows, "Original", false);
     let old_diff_state = model.old_diff_state_mut();
     f.render_stateful_widget(body_left, body_chunks[0], old_diff_state);
 
     // Right Diff
-    let body_right = draw_diff_table(&model, &diff_two_rows, "New", true);
+    let current_diff_rows = parse_diff_rows(model.current_diff());
+    let body_right = draw_diff_table(&model, current_diff_rows, "New", true);
     let current_diff_state = model.current_diff_state_mut();
     f.render_stateful_widget(body_right, body_chunks[1], current_diff_state);
 
-    draw_footer(chunks, f, model)
+    // draw_footer(chunks, f, model)
 }
 
 /// Checks terminal size is large enough
@@ -69,18 +75,18 @@ fn check_size(f: &Rect) {
     }
 }
 
-fn draw_footer(chunks: std::rc::Rc<[Rect]>, f: &mut Frame, model: &Model) {
-    // Footer Layout (Console & Help)
-    let footer_chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(70), Constraint::Percentage(30)].as_ref())
-        .split(chunks[2]);
-
-    // Console Section
-    let console = draw_console(model);
-    f.render_widget(console, footer_chunks[0]);
-
-    // Help Menu
-    let help_menu = draw_help(model);
-    f.render_widget(help_menu, footer_chunks[1]);
-}
+// fn draw_footer(chunks: std::rc::Rc<[Rect]>, f: &mut Frame, model: &Model) {
+//     // Footer Layout (Console & Help)
+//     let footer_chunks = Layout::default()
+//         .direction(Direction::Horizontal)
+//         .constraints([Constraint::Percentage(70), Constraint::Percentage(30)].as_ref())
+//         .split(chunks[2]);
+//
+//     // Console Section
+//     let console = draw_console(model);
+//     f.render_widget(console, footer_chunks[0]);
+//
+//     // Help Menu
+//     let help_menu = draw_help(model);
+//     f.render_widget(help_menu, footer_chunks[1]);
+// }

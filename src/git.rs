@@ -7,11 +7,11 @@ pub struct Diff {
 }
 
 impl Diff {
-    pub fn diff_one(&self) -> &[DiffLine] {
+    pub fn old_diff(&self) -> &[DiffLine] {
         &self.old_diff
     }
 
-    pub fn diff_two(&self) -> &[DiffLine] {
+    pub fn current_diff(&self) -> &[DiffLine] {
         &self.current_diff
     }
 

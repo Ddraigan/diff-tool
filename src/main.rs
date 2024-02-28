@@ -4,7 +4,9 @@ use diff_tool::{
     cli::Arguments,
     git::{get_diff, get_raw_diff},
     model::{Model, RunningState},
-    tui, view,
+    tui,
+    update::update,
+    view,
 };
 
 fn main() -> Result<()> {
@@ -22,6 +24,12 @@ fn main() -> Result<()> {
     while *model.running_state() != RunningState::Done {
         // Render ui
         terminal.draw(|rect| view::view(&mut model, rect))?;
+
+        let mut current_msg = handle_event(&model)?;
+
+        while current_msg.is_some() {
+            current_msg = update(&mut model, current_msg.unwrap());
+        }
     }
 
     tui::restore_terminal()?;
