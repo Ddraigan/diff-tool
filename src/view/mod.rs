@@ -20,14 +20,11 @@ pub fn view(model: &mut Model, f: &mut Frame) {
     // Vertical Layout
     let area = Layout::default()
         .direction(Direction::Vertical)
-        .constraints(
-            [
-                Constraint::Length(3),
-                Constraint::Min(10),
-                Constraint::Max(10),
-            ]
-            .as_ref(),
-        )
+        .constraints([
+            Constraint::Length(3),
+            Constraint::Min(10),
+            Constraint::Max(10),
+        ])
         .split(size);
 
     // Title at top
@@ -37,7 +34,7 @@ pub fn view(model: &mut Model, f: &mut Frame) {
     // Body Layout (Left Diff & Right Diff)
     let body_area = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(area[1]);
 
     // Left Diff

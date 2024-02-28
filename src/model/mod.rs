@@ -72,6 +72,19 @@ impl Model {
         self.running_state = RunningState::Done
     }
 
+    fn longest_diff_len(&self) -> usize {
+        let old_diff = self.diff.old_diff().len();
+        let current_diff = self.diff.current_diff().len();
+
+        std::cmp::max(old_diff, current_diff) - 1
+    }
+
+    pub fn bottom_row(&self) {
+        let last_row = self.longest_diff_len();
+        self.state.old_diff.borrow_mut().select(Some(last_row));
+        self.state.current_diff.borrow_mut().select(Some(last_row));
+    }
+
     pub fn next_row(&self) {
         let i = match self.state.old_diff.borrow().selected() {
             Some(i) => {

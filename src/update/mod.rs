@@ -17,7 +17,7 @@ pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
         Message::RowUp => model.previous_row(),
         Message::RowDown => model.next_row(),
         Message::TopRow => return Some(Message::Reset),
-        Message::BottomRow => {}
+        Message::BottomRow => model.bottom_row(),
         Message::Reset => model.reset_row_state(),
         Message::Nothing => {}
         Message::Quit => {
