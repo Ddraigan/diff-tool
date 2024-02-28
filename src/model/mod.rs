@@ -9,13 +9,14 @@ pub struct Model {
     line_count: u32,
     running_state: RunningState,
     diff: Diff,
-    pub state: State,
+    state: State,
+    // Model could do with a colours / styling section that can load a config for theming
 }
 
 #[derive(Debug)]
 pub struct State {
-    pub old_diff: RefCell<TableState>,
-    pub current_diff: RefCell<TableState>,
+    old_diff: RefCell<TableState>,
+    current_diff: RefCell<TableState>,
 }
 
 impl Default for State {
@@ -42,16 +43,20 @@ impl Model {
         }
     }
 
+    pub fn old_diff_state(&self) -> &RefCell<TableState> {
+        &self.state.old_diff
+    }
+
+    pub fn current_diff_state(&self) -> &RefCell<TableState> {
+        &self.state.current_diff
+    }
+
     pub fn max_content(&self) -> bool {
         if self.line_count != self.diff.largest_line_number_len().into() {
             return false;
         }
         true
     }
-
-    // pub fn current_state_get_mut(&self) {
-    //
-    // }
 
     pub fn old_diff(&self) -> &[DiffLine] {
         self.diff.old_diff()

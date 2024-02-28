@@ -9,7 +9,7 @@ use ratatui::{
 
 use crate::model::Model;
 
-use self::{body::draw_diff_table, header::draw_title};
+use self::{body::render_diff_table, header::draw_title};
 
 /// Renders all the components
 pub fn view(model: &mut Model, f: &mut Frame) {
@@ -41,10 +41,10 @@ pub fn view(model: &mut Model, f: &mut Frame) {
         .split(area[1]);
 
     // Left Diff
-    draw_diff_table(model, f, body_area[0], "Original", false);
+    render_diff_table(model, f, body_area[0], false);
 
     // Right Diff
-    draw_diff_table(model, f, body_area[1], "New", true);
+    render_diff_table(model, f, body_area[1], true);
 
     // draw_footer(chunks, f, model)
 }

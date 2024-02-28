@@ -12,18 +12,14 @@ use crate::{
 };
 
 /// Draws a diff table
-pub(crate) fn draw_diff_table(
-    model: &Model,
-    f: &mut Frame,
-    area: Rect,
-    diff_title: &str,
-    is_current_diff: bool,
-) {
+pub(crate) fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: bool) {
     let diff = if is_current_diff {
         model.current_diff()
     } else {
         model.old_diff()
     };
+
+    let diff_title = if is_current_diff { "New" } else { "Original" };
 
     let rows = parse_diff_rows(diff);
 
@@ -56,9 +52,9 @@ pub(crate) fn draw_diff_table(
         .highlight_symbol(">>");
 
     let mut state = if is_current_diff {
-        model.state.current_diff.borrow_mut()
+        model.current_diff_state().borrow_mut()
     } else {
-        model.state.old_diff.borrow_mut()
+        model.old_diff_state().borrow_mut()
     };
 
     f.render_stateful_widget(table, area, &mut state);
