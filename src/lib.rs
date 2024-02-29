@@ -1,6 +1,6 @@
-pub mod cli;
-pub mod git;
+pub mod input;
 pub mod model;
-pub mod tui;
+pub mod services;
 pub mod update;
+pub mod utils;
 pub mod view;

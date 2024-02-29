@@ -9,8 +9,8 @@ use ratatui::{
 };
 
 use crate::{
-    git::{DiffKind, DiffLine},
     model::Model,
+    services::git::{DiffKind, DiffLine},
 };
 
 pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rc<[Rect]>) {

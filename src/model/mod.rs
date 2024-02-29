@@ -2,7 +2,7 @@ use std::cell::RefCell;
 
 use ratatui::widgets::TableState;
 
-use crate::git::{Diff, DiffLine};
+use crate::services::git::{Diff, DiffLine};
 
 #[derive(Debug)]
 pub struct Model {

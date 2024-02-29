@@ -1,12 +1,12 @@
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
-    cli::Arguments,
-    git::get_raw_diff,
+    input::event::handle_event,
     model::{Model, RunningState},
-    tui,
-    update::{event::handle_event, update},
-    view::{self},
+    services::{git::get_raw_diff, tui},
+    update::update,
+    utils::cli::Arguments,
+    view,
 };
 
 fn main() -> Result<()> {
