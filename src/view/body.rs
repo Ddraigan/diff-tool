@@ -7,7 +7,7 @@ use ratatui::{
 };
 
 use crate::{
-    git::{DiffKind, DiffLine},
+    git::{Diff, DiffKind, DiffLine},
     model::Model,
 };
 
@@ -60,7 +60,7 @@ pub(crate) fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_cur
     f.render_stateful_widget(table, area, &mut state);
 }
 
-pub fn parse_diff_rows<'a>(diff_content: &'a [DiffLine]) -> Vec<Row<'a>> {
+pub fn parse_diff_rows(diff_content: &[DiffLine]) -> Vec<Row> {
     diff_content.iter().map(parse_diff_line).collect()
 }
 
