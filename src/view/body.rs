@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
@@ -13,13 +11,13 @@ use crate::{
     services::git::{DiffKind, DiffLine},
 };
 
-pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rc<[Rect]>) {
+pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
     if model.diff().is_some() {
         // Body Layout (Left Diff & Right Diff)
         let body_area = Layout::default()
             .direction(Direction::Horizontal)
             .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
-            .split(area[1]);
+            .split(area);
         // Old/Left Diff
         render_diff_table(model, f, body_area[0], false);
 

@@ -1,12 +1,14 @@
 use ratatui::{
+    layout::Rect,
     prelude::Alignment,
     style::{Color, Style},
     widgets::{Block, BorderType, Borders, Paragraph},
+    Frame,
 };
 
 /// Draws the title component
-pub(crate) fn draw_title<'a>() -> Paragraph<'a> {
-    Paragraph::new("Git Diff View")
+pub(crate) fn draw_title<'a>(f: &mut Frame, area: Rect) {
+    let title = Paragraph::new("Git Diff View")
         .style(Style::default().fg(Color::LightCyan))
         .alignment(Alignment::Center)
         .block(
@@ -14,5 +16,7 @@ pub(crate) fn draw_title<'a>() -> Paragraph<'a> {
                 .borders(Borders::ALL)
                 .style(Style::default().fg(Color::White))
                 .border_type(BorderType::Plain),
-        )
+        );
+
+    f.render_widget(title, area);
 }

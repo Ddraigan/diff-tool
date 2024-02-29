@@ -27,13 +27,11 @@ pub fn view(model: &mut Model, f: &mut Frame) {
         ])
         .split(size);
 
-    // Title at top
-    let title = draw_title();
-    f.render_widget(title, area[0]);
+    draw_title(f, area[0]);
 
-    draw_body(model, f, area);
+    draw_body(model, f, area[1]);
 
-    // draw_footer(chunks, f, model)
+    // draw_footer(area[2], f, model);
 }
 
 /// Checks terminal size is large enough
