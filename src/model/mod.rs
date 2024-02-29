@@ -9,6 +9,7 @@ pub struct Model {
     running_state: RunningState,
     diff: Diff,
     state: State,
+    event: String,
     // Model could do with a colours / styling section that can load a config for theming
 }
 
@@ -32,12 +33,18 @@ impl Model {
         let running_state = RunningState::default();
         let diff = Diff::parse_diff(diff_string);
         let state = State::default();
+        let event = String::from("");
 
         Self {
             running_state,
             diff,
             state,
+            event,
         }
+    }
+
+    pub fn update_event(&mut self, value: &str) {
+        self.event = value.to_string();
     }
 
     pub fn old_diff_state(&self) -> &RefCell<TableState> {
