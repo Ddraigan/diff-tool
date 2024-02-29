@@ -14,6 +14,8 @@ use diff_tool::{
 
 fn main() -> Result<()> {
     env_logger::init();
+    terminal::install_panic_hook();
+
     let args = Arguments::parse();
     let path = args.path();
 
