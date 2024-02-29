@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use anyhow::Result;
-use crossterm::event::{self, Event, KeyCode, KeyEventKind};
+use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 
 use crate::model::Model;
 use crate::update::Message;
@@ -24,6 +24,12 @@ fn handle_key(key: event::KeyEvent) -> Option<Message> {
         KeyCode::Char('g') => Some(Message::Reset),
         KeyCode::Char('G') => Some(Message::BottomRow),
         KeyCode::Char('q') => Some(Message::Quit),
+        KeyCode::Char('c') | KeyCode::Char('C') => {
+            if key.modifiers == KeyModifiers::CONTROL {
+                return Some(Message::Quit);
+            }
+            None
+        }
         KeyCode::Esc => Some(Message::Quit),
         _ => None,
     }

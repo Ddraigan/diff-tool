@@ -24,7 +24,7 @@ pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
         }
         Message::Quit => {
             // Handle some exit stuff
-            model.set_done();
+            model.quit();
         }
     }
 

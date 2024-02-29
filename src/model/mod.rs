@@ -78,7 +78,7 @@ impl Model {
         self.running_state = RunningState::Running
     }
 
-    pub fn set_done(&mut self) {
+    pub fn quit(&mut self) {
         self.running_state = RunningState::Done
     }
 
