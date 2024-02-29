@@ -4,7 +4,6 @@ For git diffing in the terminal
 
 # Todo
 
-- [ ] Diff line wrapping
 - [x] Diff scrolling
 - [x] Sync diff scrolling
 - [x] Dynamic line number width
@@ -14,3 +13,4 @@ For git diffing in the terminal
 - [ ] Colour theme support
 - [x] Runnable from any directory (not just with a git repo)
 - [ ] (Bug) Fix run action display log
+- [ ] Panicking doesn't clear properly

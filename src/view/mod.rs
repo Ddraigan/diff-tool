@@ -9,7 +9,7 @@ use ratatui::{
 
 use crate::model::Model;
 
-use self::{body::render_diff_table, header::draw_title};
+use self::{body::draw_body, header::draw_title};
 
 /// Renders all the components
 pub fn view(model: &mut Model, f: &mut Frame) {
@@ -31,17 +31,7 @@ pub fn view(model: &mut Model, f: &mut Frame) {
     let title = draw_title();
     f.render_widget(title, area[0]);
 
-    // Body Layout (Left Diff & Right Diff)
-    let body_area = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
-        .split(area[1]);
-
-    // Left Diff
-    render_diff_table(model, f, body_area[0], false);
-
-    // Right Diff
-    render_diff_table(model, f, body_area[1], true);
+    draw_body(model, f, area);
 
     // draw_footer(chunks, f, model)
 }

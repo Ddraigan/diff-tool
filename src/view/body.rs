@@ -1,5 +1,7 @@
+use std::rc::Rc;
+
 use ratatui::{
-    layout::{Constraint, Rect},
+    layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Line, Span},
     widgets::{Block, Borders, Cell, Row, Table},
@@ -7,12 +9,29 @@ use ratatui::{
 };
 
 use crate::{
-    git::{Diff, DiffKind, DiffLine},
+    git::{DiffKind, DiffLine},
     model::Model,
 };
 
+pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rc<[Rect]>) {
+    if model.diff().is_some() {
+        // Body Layout (Left Diff & Right Diff)
+        let body_area = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+            .split(area[1]);
+        // Old/Left Diff
+        render_diff_table(model, f, body_area[0], false);
+
+        // Current/Right Diff
+        return render_diff_table(model, f, body_area[1], true);
+    }
+    // TODO: Some sort of widget in place of a no diff
+    unimplemented!()
+}
+
 /// Draws a diff table
-pub(crate) fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: bool) {
+fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: bool) {
     let diff = if is_current_diff {
         model.current_diff()
     } else {
@@ -25,7 +44,12 @@ pub(crate) fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_cur
 
     // Dynamic column width
     let col_widths = [
-        Constraint::Length(model.diff().largest_line_number_len()),
+        Constraint::Length(
+            model
+                .diff()
+                .expect("Must have a diff to get this far")
+                .largest_line_number_len(),
+        ),
         Constraint::Percentage(2),
         Constraint::Percentage(97),
     ];
@@ -60,7 +84,7 @@ pub(crate) fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_cur
     f.render_stateful_widget(table, area, &mut state);
 }
 
-pub fn parse_diff_rows(diff_content: &[DiffLine]) -> Vec<Row> {
+fn parse_diff_rows(diff_content: &[DiffLine]) -> Vec<Row> {
     diff_content.iter().map(parse_diff_line).collect()
 }
 

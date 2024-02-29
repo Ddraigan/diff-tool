@@ -56,8 +56,11 @@ impl Model {
         self.diff.current_diff()
     }
 
-    pub fn diff(&self) -> &Diff {
-        &self.diff
+    pub fn diff(&self) -> Option<&Diff> {
+        if self.old_diff().len() & self.current_diff().len() != 0 {
+            return Some(&self.diff);
+        }
+        None
     }
 
     pub fn running_state(&self) -> &RunningState {
