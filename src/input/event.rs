@@ -24,6 +24,7 @@ fn handle_key(key: event::KeyEvent) -> Option<Message> {
         KeyCode::Char('g') => Some(Message::Reset),
         KeyCode::Char('G') => Some(Message::BottomRow),
         KeyCode::Char('q') => Some(Message::Quit),
+        KeyCode::Esc => Some(Message::Quit),
         _ => None,
     }
 }
