@@ -10,6 +10,7 @@ pub fn init_terminal() -> Result<Terminal<impl Backend>> {
     enable_raw_mode()?;
     stdout().execute(EnterAlternateScreen)?;
     let terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
+    install_panic_hook();
     Ok(terminal)
 }
 
@@ -19,7 +20,7 @@ pub fn restore_terminal() -> Result<()> {
     Ok(())
 }
 
-pub fn install_panic_hook() {
+fn install_panic_hook() {
     let original_hook = panic::take_hook();
     panic::set_hook(Box::new(move |panic_info| {
         stdout().execute(LeaveAlternateScreen).unwrap();

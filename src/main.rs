@@ -3,7 +3,10 @@ use clap::Parser;
 use diff_tool::{
     input::event::handle_event,
     model::{Model, RunningState},
-    services::{git::get_raw_diff, tui},
+    services::{
+        git::get_raw_diff,
+        terminal::{self},
+    },
     update::update,
     utils::cli::Arguments,
     view,
@@ -14,7 +17,7 @@ fn main() -> Result<()> {
     let args = Arguments::parse();
     let path = args.path();
 
-    let mut terminal = tui::init_terminal()?;
+    let mut terminal = terminal::init_terminal()?;
 
     let diff_string = get_raw_diff(path, args.change_dir());
     let mut model = Model::new(&diff_string);
@@ -31,7 +34,7 @@ fn main() -> Result<()> {
         }
     }
 
-    tui::restore_terminal()?;
+    terminal::restore_terminal()?;
 
     Ok(())
 }

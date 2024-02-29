@@ -177,14 +177,14 @@ impl DiffKind {
 /// Performs 'git diff -U1000 <filename>' or 'git -C [path] diff -U1000 <filename>' and returns the result as a string
 pub fn get_raw_diff(path: &str, dir_flag: bool) -> String {
     let args = if !dir_flag {
-        ["diff", "-U1000", path, "", ""]
+        vec!["diff", "-U1000", path]
     } else {
         #[cfg(target_os = "windows")]
         let delimiter = '\\';
         #[cfg(not(target_os = "windows"))]
         let delimiter = '/';
         let (path, filename) = path.rsplit_once(delimiter).expect("Path to be valid");
-        ["-C", path, "diff", "-U1000", filename]
+        vec!["-C", path, "diff", "-U1000", filename]
     };
 
     // Process git diff <filename> command and save the stdout response
