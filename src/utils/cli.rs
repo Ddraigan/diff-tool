@@ -8,8 +8,8 @@ pub struct Arguments {
     change_dir: bool,
     /// File to diff with
     path: String,
-    #[clap(short, long, default_value_t = 250)]
-    tick_rate: u64,
+    // #[clap(short, long, default_value_t = 250)]
+    // tick_rate: u64,
 }
 
 impl Arguments {
@@ -21,7 +21,7 @@ impl Arguments {
         self.change_dir
     }
 
-    pub fn tick_rate(&self) -> u64 {
-        self.tick_rate
-    }
+    // pub fn tick_rate(&self) -> u64 {
+    //     self.tick_rate
+    // }
 }
