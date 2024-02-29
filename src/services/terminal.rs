@@ -23,8 +23,7 @@ pub fn restore_terminal() -> Result<()> {
 fn install_panic_hook() {
     let original_hook = panic::take_hook();
     panic::set_hook(Box::new(move |panic_info| {
-        stdout().execute(LeaveAlternateScreen).unwrap();
-        disable_raw_mode().unwrap();
+        restore_terminal().unwrap();
         original_hook(panic_info);
     }));
 }
