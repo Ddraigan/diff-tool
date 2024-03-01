@@ -16,3 +16,4 @@ For git diffing in the terminal
 - [ ] (Bug) Panicking doesn't clear properly
 - [ ] Anchor points on diff changes e.g keymap to jump to the next added line
 - [ ] Option of diffing full document or diffing anchor points
+- [ ] Add scroll bar

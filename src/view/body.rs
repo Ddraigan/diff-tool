@@ -42,6 +42,7 @@ fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: 
 
     // Dynamic column width
     let col_widths = [
+        // Line Number col depends on the largest line number
         Constraint::Length(
             model
                 .diff()
@@ -114,9 +115,9 @@ fn parse_diff_line(line: &DiffLine) -> Row {
     let content = line.content();
 
     Row::new([
-        Cell::from(Line::from(line_number).alignment(ratatui::prelude::Alignment::Right))
+        (Line::from(line_number).alignment(ratatui::prelude::Alignment::Right))
             .style(Style::default().fg(Color::Gray)),
-        Cell::from(prefix).style(prefix_style),
-        Cell::from(content).style(content_style),
+        Line::from(prefix).style(prefix_style),
+        Line::from(content).style(content_style),
     ])
 }
