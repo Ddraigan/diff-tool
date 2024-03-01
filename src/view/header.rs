@@ -1,7 +1,7 @@
 use ratatui::{
     layout::Rect,
     style::{Color, Style},
-    widgets::{Block, BorderType, Borders, Paragraph},
+    widgets::{Block, BorderType, Paragraph},
     Frame,
 };
 
@@ -11,8 +11,7 @@ pub(crate) fn draw_title<'a>(f: &mut Frame, area: Rect) {
         .style(Style::default().fg(Color::LightCyan))
         .centered()
         .block(
-            Block::default()
-                .borders(Borders::ALL)
+            Block::bordered()
                 .style(Style::default().fg(Color::White))
                 .border_type(BorderType::Plain),
         );

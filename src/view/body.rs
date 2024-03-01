@@ -3,7 +3,7 @@ use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Line, Span},
-    widgets::{Block, Borders, Row, Table},
+    widgets::{Block, Row, Table},
     Frame,
 };
 
@@ -55,12 +55,11 @@ fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: 
 
     let table = Table::new(rows, col_widths)
         .block(
-            Block::default()
+            Block::bordered()
                 .title(Span::styled(
                     diff_title,
                     Style::default().fg(Color::LightCyan),
                 ))
-                .borders(Borders::ALL)
                 .style(Style::default().fg(Color::White))
                 .border_type(ratatui::widgets::BorderType::Plain),
         )
