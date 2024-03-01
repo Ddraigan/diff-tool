@@ -21,8 +21,8 @@ fn main() -> Result<()> {
 
     let mut terminal = terminal::init_terminal()?;
 
-    let diff_string = get_raw_diff(path, args.change_dir());
     let mut model = Model::default();
+    let diff_string = get_raw_diff(path, args.change_dir());
     model.set_diff(&diff_string);
 
     // Will exit when RunningState is not 'Done'
