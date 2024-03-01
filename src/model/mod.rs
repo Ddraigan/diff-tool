@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::{cell::RefCell, time::Duration};
 
 use ratatui::widgets::TableState;
 
@@ -10,6 +10,7 @@ pub struct Model {
     diff: Diff,
     state: State,
     event: String,
+    tick_rate: Duration,
     // Model could do with a colours / styling section that can load a config for theming
 }
 
@@ -28,19 +29,43 @@ impl Default for State {
     }
 }
 
-impl Model {
-    pub fn new(diff_string: &str) -> Self {
-        let running_state = RunningState::default();
-        let diff = Diff::parse_diff(diff_string);
-        let state = State::default();
-        let event = String::from("");
-
+impl Default for Model {
+    fn default() -> Self {
         Self {
-            running_state,
-            diff,
-            state,
-            event,
+            running_state: Default::default(),
+            diff: Default::default(),
+            state: Default::default(),
+            event: Default::default(),
+            tick_rate: Duration::from_millis(250),
         }
+    }
+}
+
+impl Model {
+    pub fn set_diff(&mut self, diff_string: &str) {
+        self.diff = Diff::parse_diff(diff_string)
+    }
+    // pub fn new(diff_string: &str) -> Self {
+    //     let running_state = RunningState::default();
+    //     let diff = Diff::parse_diff(diff_string);
+    //     let state = State::default();
+    //     let event = String::default();
+    //
+    //     Self {
+    //         running_state,
+    //         diff,
+    //         state,
+    //         event,
+    //     }
+    // }
+    //
+    //
+    pub fn set_tick_rate(&mut self, tick_rate: Duration) {
+        self.tick_rate = tick_rate
+    }
+
+    pub fn tick_rate(&self) -> &Duration {
+        &self.tick_rate
     }
 
     pub fn update_event(&mut self, value: &str) {

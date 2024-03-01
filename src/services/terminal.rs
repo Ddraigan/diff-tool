@@ -7,6 +7,7 @@ use ratatui::prelude::*;
 use std::{io::stdout, panic};
 
 pub fn init_terminal() -> Result<Terminal<impl Backend>> {
+    log::trace!("Initialising Terminal");
     enable_raw_mode()?;
     stdout().execute(EnterAlternateScreen)?;
     let terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
@@ -14,6 +15,7 @@ pub fn init_terminal() -> Result<Terminal<impl Backend>> {
 }
 
 pub fn restore_terminal() -> Result<()> {
+    log::trace!("Restoring Terminal");
     stdout().execute(LeaveAlternateScreen)?;
     disable_raw_mode()?;
     Ok(())

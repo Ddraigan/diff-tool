@@ -1,5 +1,8 @@
+use serde::Deserialize;
+
 use crate::model::Model;
 
+#[derive(Clone, Debug, Deserialize)]
 pub enum Message {
     RowUp,
     RowDown,

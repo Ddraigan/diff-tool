@@ -6,8 +6,8 @@ use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 use crate::model::Model;
 use crate::update::Message;
 
-pub fn handle_event(_: &Model) -> Result<Option<Message>> {
-    if event::poll(Duration::from_millis(250))? {
+pub fn handle_event(model: &Model) -> Result<Option<Message>> {
+    if event::poll(model.tick_rate())? {
         if let Event::Key(key) = event::read()? {
             if key.kind == KeyEventKind::Press {
                 return Ok(handle_key(key));
