@@ -3,7 +3,7 @@ pub mod footer;
 pub mod header;
 
 use ratatui::{
-    layout::{Constraint, Direction, Layout, Rect},
+    layout::{Constraint, Layout, Rect},
     Frame,
 };
 
@@ -18,14 +18,12 @@ pub fn view(model: &mut Model, f: &mut Frame) {
     check_size(&size);
 
     // Vertical Layout
-    let area = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(3),
-            Constraint::Min(10),
-            Constraint::Max(10),
-        ])
-        .split(size);
+    let area = Layout::vertical([
+        Constraint::Length(3),
+        Constraint::Min(10),
+        Constraint::Max(10),
+    ])
+    .split(size);
 
     draw_title(f, area[0]);
 
