@@ -42,30 +42,12 @@ impl Default for Model {
 }
 
 impl Model {
-    pub fn set_diff(&mut self, diff_string: &str) {
-        self.diff = Diff::parse_diff(diff_string)
-    }
-    // pub fn new(diff_string: &str) -> Self {
-    //     let running_state = RunningState::default();
-    //     let diff = Diff::parse_diff(diff_string);
-    //     let state = State::default();
-    //     let event = String::default();
-    //
-    //     Self {
-    //         running_state,
-    //         diff,
-    //         state,
-    //         event,
-    //     }
-    // }
-    //
-    //
-    pub fn set_tick_rate(&mut self, tick_rate: Duration) {
-        self.tick_rate = tick_rate
-    }
-
     pub fn tick_rate(&self) -> &Duration {
         &self.tick_rate
+    }
+
+    pub fn set_tick_rate(&mut self, tick_rate: Duration) {
+        self.tick_rate = tick_rate
     }
 
     pub fn update_event(&mut self, value: &str) {
@@ -95,6 +77,10 @@ impl Model {
         None
     }
 
+    pub fn set_diff(&mut self, diff_string: &str) {
+        self.diff = Diff::parse_diff(diff_string)
+    }
+
     pub fn running_state(&self) -> &RunningState {
         &self.running_state
     }
@@ -121,7 +107,7 @@ impl Model {
     }
 
     pub fn next_row(&self) {
-        let i = match self.state.old_diff.borrow().selected() {
+        let old_diff_row_index = match self.state.old_diff.borrow().selected() {
             Some(i) => {
                 if i >= self.diff.old_diff().len() - 1 {
                     0
@@ -132,7 +118,7 @@ impl Model {
             None => 0,
         };
 
-        let j = match self.state.current_diff.borrow().selected() {
+        let current_diff_row_index = match self.state.current_diff.borrow().selected() {
             Some(j) => {
                 if j >= self.diff.current_diff().len() - 1 {
                     0
@@ -143,12 +129,18 @@ impl Model {
             None => 0,
         };
 
-        self.state.old_diff.borrow_mut().select(Some(i));
-        self.state.current_diff.borrow_mut().select(Some(j));
+        self.state
+            .old_diff
+            .borrow_mut()
+            .select(Some(old_diff_row_index));
+        self.state
+            .current_diff
+            .borrow_mut()
+            .select(Some(current_diff_row_index));
     }
 
     pub fn previous_row(&self) {
-        let i = match self.state.old_diff.borrow().selected() {
+        let old_diff_row_index = match self.state.old_diff.borrow().selected() {
             Some(i) => {
                 if i == 0 {
                     self.diff.old_diff().len() - 1
@@ -159,7 +151,7 @@ impl Model {
             None => 0,
         };
 
-        let j = match self.state.current_diff.borrow().selected() {
+        let current_diff_row_index = match self.state.current_diff.borrow().selected() {
             Some(j) => {
                 if j == 0 {
                     self.diff.current_diff().len() - 1
@@ -170,8 +162,14 @@ impl Model {
             None => 0,
         };
 
-        self.state.old_diff.borrow_mut().select(Some(i));
-        self.state.current_diff.borrow_mut().select(Some(j));
+        self.state
+            .old_diff
+            .borrow_mut()
+            .select(Some(old_diff_row_index));
+        self.state
+            .current_diff
+            .borrow_mut()
+            .select(Some(current_diff_row_index));
     }
 
     pub fn reset_row_state(&self) {

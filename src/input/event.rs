@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 
@@ -7,7 +5,7 @@ use crate::model::Model;
 use crate::update::Message;
 
 pub fn handle_event(model: &Model) -> Result<Option<Message>> {
-    if event::poll(model.tick_rate())? {
+    if event::poll(*model.tick_rate())? {
         if let Event::Key(key) = event::read()? {
             if key.kind == KeyEventKind::Press {
                 return Ok(handle_key(key));
