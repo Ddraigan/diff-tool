@@ -1,6 +1,5 @@
 use ratatui::{
     layout::Rect,
-    prelude::Alignment,
     style::{Color, Style},
     widgets::{Block, BorderType, Borders, Paragraph},
     Frame,
@@ -10,7 +9,7 @@ use ratatui::{
 pub(crate) fn draw_title<'a>(f: &mut Frame, area: Rect) {
     let title = Paragraph::new("Git Diff View")
         .style(Style::default().fg(Color::LightCyan))
-        .alignment(Alignment::Center)
+        .centered()
         .block(
             Block::default()
                 .borders(Borders::ALL)
