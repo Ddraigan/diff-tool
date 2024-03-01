@@ -15,13 +15,14 @@ use crate::{
 pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
     if model.diff().is_some() {
         // Body Layout (Left Diff & Right Diff)
-        let body_area = Layout::horizontal(Constraint::from_percentages([50, 50])).split(area);
+        let [left_side, right_side] =
+            Layout::horizontal(Constraint::from_percentages([50, 50])).areas(area);
 
         // Old/Left Diff
-        render_diff_table(model, f, body_area[0], false);
+        render_diff_table(model, f, left_side, false);
 
         // Current/Right Diff
-        return render_diff_table(model, f, body_area[1], true);
+        return render_diff_table(model, f, right_side, true);
     }
     error!("No Diff was able to be drawn")
 }
@@ -39,7 +40,7 @@ fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: 
     let rows = parse_diff_rows(diff);
 
     // Dynamic column width
-    let col_widths = [
+    let widths = [
         // Line Number col depends on the largest line number
         Constraint::Length(
             model
@@ -51,7 +52,7 @@ fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: 
         Constraint::Percentage(97),
     ];
 
-    let table = Table::new(rows, col_widths)
+    let table = Table::new(rows, widths)
         .block(
             Block::bordered()
                 .title(Span::styled(

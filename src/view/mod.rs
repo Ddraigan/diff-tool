@@ -17,19 +17,18 @@ pub fn view(model: &mut Model, f: &mut Frame) {
     let size = f.size();
     check_size(&size);
 
-    // Vertical Layout
-    let area = Layout::vertical([
+    let [header, body, _footer] = Layout::vertical([
         Constraint::Length(3),
         Constraint::Min(10),
         Constraint::Max(10),
     ])
-    .split(size);
+    .areas(size);
 
-    draw_title(f, area[0]);
+    draw_title(f, header);
 
-    draw_body(model, f, area[1]);
+    draw_body(model, f, body);
 
-    // draw_footer(area[2], f, model);
+    // draw_footer(footer, f, model);
 }
 
 /// Checks terminal size is large enough
