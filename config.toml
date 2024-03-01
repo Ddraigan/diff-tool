@@ -6,3 +6,5 @@
 "Ctrl-d" = "Quit"
 "j" = "Down"
 "k" = "Up"
+"g" = "FirstLine"
+"G" = "LastLine"
