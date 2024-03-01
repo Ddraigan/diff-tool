@@ -114,10 +114,8 @@ fn parse_diff_line(line: &DiffLine) -> Row {
     let content = line.content();
 
     Row::new([
-        Line::from(line_number)
-            .right_aligned()
-            .style(line_number_style),
-        Line::from(prefix).style(prefix_style),
-        Line::from(content).style(content_style),
+        Line::styled(line_number, line_number_style).right_aligned(),
+        Line::styled(prefix, prefix_style),
+        Line::styled(content, content_style),
     ])
 }
