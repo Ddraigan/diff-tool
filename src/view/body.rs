@@ -1,3 +1,4 @@
+use log::error;
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
@@ -16,7 +17,7 @@ pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
         // Body Layout (Left Diff & Right Diff)
         let body_area = Layout::default()
             .direction(Direction::Horizontal)
-            .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+            .constraints(Constraint::from_percentages([50, 50]))
             .split(area);
         // Old/Left Diff
         render_diff_table(model, f, body_area[0], false);
@@ -24,8 +25,7 @@ pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
         // Current/Right Diff
         return render_diff_table(model, f, body_area[1], true);
     }
-    // TODO: Some sort of widget in place of a no diff
-    unimplemented!()
+    error!("No Diff was able to be drawn")
 }
 
 /// Draws a diff table
@@ -64,7 +64,6 @@ fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: 
                 .style(Style::default().fg(Color::White))
                 .border_type(ratatui::widgets::BorderType::Plain),
         )
-        .column_spacing(1)
         .highlight_style(if is_current_diff {
             Style::default()
                 .fg(Color::Magenta)
@@ -88,22 +87,24 @@ fn parse_diff_rows(diff_content: &[DiffLine]) -> Vec<Row> {
 }
 
 fn parse_diff_line(line: &DiffLine) -> Row {
-    let prefix_style = match line.kind() {
-        DiffKind::Addition => Style::default()
-            .fg(Color::Green)
-            .add_modifier(Modifier::BOLD),
-        DiffKind::Removal => Style::default().fg(Color::Red).add_modifier(Modifier::BOLD),
-        DiffKind::Neutral => Style::default(),
-        DiffKind::Blank => Style::default(),
-    };
+    let line_number_style = Style::default().fg(Color::Gray);
 
-    let content_style = match line.kind() {
-        DiffKind::Addition => Style::default()
-            .bg(Color::Rgb(131, 242, 140))
-            .fg(Color::Black),
-        DiffKind::Removal => Style::default().bg(Color::LightRed).fg(Color::Black),
-        DiffKind::Neutral => Style::default(),
-        DiffKind::Blank => Style::default().bg(Color::DarkGray),
+    // TODO: The styling should be a property of the model
+    let (prefix_style, content_style) = match line.kind() {
+        DiffKind::Addition => (
+            Style::default()
+                .fg(Color::Green)
+                .add_modifier(Modifier::BOLD),
+            Style::default()
+                .bg(Color::Rgb(131, 242, 140))
+                .fg(Color::Black),
+        ),
+        DiffKind::Removal => (
+            Style::default().fg(Color::Red).add_modifier(Modifier::BOLD),
+            Style::default().bg(Color::LightRed).fg(Color::Black),
+        ),
+        DiffKind::Neutral => (Style::default(), Style::default()),
+        DiffKind::Blank => (Style::default(), Style::default().bg(Color::DarkGray)),
     };
 
     let line_number = match line.line_number() {
@@ -116,7 +117,7 @@ fn parse_diff_line(line: &DiffLine) -> Row {
 
     Row::new([
         (Line::from(line_number).alignment(ratatui::prelude::Alignment::Right))
-            .style(Style::default().fg(Color::Gray)),
+            .style(line_number_style),
         Line::from(prefix).style(prefix_style),
         Line::from(content).style(content_style),
     ])
