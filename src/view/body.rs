@@ -3,7 +3,7 @@ use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Line, Span},
-    widgets::{Block, Row, Table},
+    widgets::{Block, BorderType, Row, Table},
     Frame,
 };
 
@@ -60,7 +60,7 @@ fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: 
                     Style::default().fg(Color::LightCyan),
                 ))
                 .style(Style::default().fg(Color::White))
-                .border_type(ratatui::widgets::BorderType::Plain),
+                .border_type(BorderType::Plain),
         )
         .highlight_style(if is_current_diff {
             Style::default()
@@ -85,9 +85,9 @@ fn parse_diff_rows(diff_content: &[DiffLine]) -> Vec<Row> {
 }
 
 fn parse_diff_line(line: &DiffLine) -> Row {
+    // TODO: The styling should be a property of the model
     let line_number_style = Style::default().fg(Color::Gray);
 
-    // TODO: The styling should be a property of the model
     let (prefix_style, content_style) = match line.kind() {
         DiffKind::Addition => (
             Style::default()
@@ -115,7 +115,7 @@ fn parse_diff_line(line: &DiffLine) -> Row {
 
     Row::new([
         Line::styled(line_number, line_number_style).right_aligned(),
-        Line::styled(prefix, prefix_style),
+        Line::styled(prefix, prefix_style).centered(),
         Line::styled(content, content_style),
     ])
 }

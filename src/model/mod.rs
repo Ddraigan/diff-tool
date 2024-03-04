@@ -10,8 +10,9 @@ pub struct Model {
     diff: Diff,
     state: State,
     event: String,
+    /// Default value is 250 millis
     tick_rate: Duration,
-    // Model could do with a colours / styling section that can load a config for theming
+    // TODO: Model could do with a colours / styling section that can load a config for theming
 }
 
 #[derive(Debug)]
