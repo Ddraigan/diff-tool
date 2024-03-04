@@ -3,7 +3,6 @@ use clap::Parser;
 use diff_tool::{
     model::{state::RunningState, Model},
     services::{cli::Arguments, git::get_raw_diff, terminal},
-    update::event::handle_event,
     view,
 };
 
@@ -29,7 +28,7 @@ fn main() -> Result<()> {
         // Render ui
         terminal.draw(|rect| view::view(&mut model, rect))?;
 
-        let mut current_msg = handle_event(&model)?;
+        let mut current_msg = model.handle_event()?;
 
         while current_msg.is_some() {
             current_msg = model.update(current_msg.unwrap());

@@ -1,10 +1,15 @@
 pub mod state;
 
+use anyhow::Result;
+use crossterm::event::{self, Event, KeyEventKind};
 use std::{cell::RefCell, time::Duration};
 
 use ratatui::widgets::TableState;
 
-use crate::{services::git::Diff, update::message::Message};
+use crate::{
+    services::git::Diff,
+    update::message::{handle_key, Message},
+};
 
 use self::state::{RunningState, State};
 
@@ -52,12 +57,20 @@ impl Model {
 
         None
     }
-    pub fn state(&self) -> &State {
-        &self.state
+
+    pub fn handle_event(&self) -> Result<Option<Message>> {
+        if event::poll(self.tick_rate)? {
+            if let Event::Key(key) = event::read()? {
+                if key.kind == KeyEventKind::Press {
+                    return Ok(handle_key(key.into()));
+                }
+            }
+        }
+        Ok(None)
     }
 
-    pub fn tick_rate(&self) -> &Duration {
-        &self.tick_rate
+    pub fn state(&self) -> &State {
+        &self.state
     }
 
     pub fn set_tick_rate(&mut self, tick_rate: Duration) {
