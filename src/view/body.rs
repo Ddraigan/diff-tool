@@ -24,6 +24,7 @@ pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
         // Current/Right Diff
         return render_diff_table(model, f, right_side, true);
     }
+    // This should be a widget rather than an error
     error!("No Diff was able to be drawn")
 }
 
