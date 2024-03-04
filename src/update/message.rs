@@ -1,4 +1,3 @@
-use crate::model::Model;
 use std::fmt::{self, Display};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -8,29 +7,6 @@ pub enum Message {
     LastRow,
     FirstRow,
     Quit,
-}
-
-pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
-    match msg {
-        Message::PrevRow => {
-            model.previous_row();
-        }
-        Message::NextRow => {
-            model.next_row();
-        }
-        Message::LastRow => {
-            model.go_to_last_row();
-        }
-        Message::FirstRow => {
-            model.state().reset_row_state();
-        }
-        Message::Quit => {
-            // Handle some exit stuff
-            model.quit();
-        }
-    }
-
-    None
 }
 
 /// Display a user friendly short description of action

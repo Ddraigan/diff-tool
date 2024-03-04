@@ -4,7 +4,7 @@ use std::{cell::RefCell, time::Duration};
 
 use ratatui::widgets::TableState;
 
-use crate::services::git::Diff;
+use crate::{services::git::Diff, update::message::Message};
 
 use self::state::{RunningState, State};
 
@@ -30,6 +30,28 @@ impl Default for Model {
 }
 
 impl Model {
+    pub fn update(&mut self, msg: Message) -> Option<Message> {
+        match msg {
+            Message::PrevRow => {
+                self.previous_row();
+            }
+            Message::NextRow => {
+                self.next_row();
+            }
+            Message::LastRow => {
+                self.go_to_last_row();
+            }
+            Message::FirstRow => {
+                self.state().reset_row_state();
+            }
+            Message::Quit => {
+                // Handle some exit stuff
+                self.quit();
+            }
+        }
+
+        None
+    }
     pub fn state(&self) -> &State {
         &self.state
     }

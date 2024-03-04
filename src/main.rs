@@ -3,7 +3,7 @@ use clap::Parser;
 use diff_tool::{
     model::{state::RunningState, Model},
     services::{cli::Arguments, git::get_raw_diff, terminal},
-    update::{event::handle_event, message::update},
+    update::event::handle_event,
     view,
 };
 
@@ -32,7 +32,7 @@ fn main() -> Result<()> {
         let mut current_msg = handle_event(&model)?;
 
         while current_msg.is_some() {
-            current_msg = update(&mut model, current_msg.unwrap());
+            current_msg = model.update(current_msg.unwrap());
         }
     }
 
