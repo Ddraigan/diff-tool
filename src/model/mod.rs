@@ -101,7 +101,7 @@ impl Model {
         std::cmp::max(old_diff, current_diff) - 1
     }
 
-    pub fn bottom_row(&self) {
+    pub fn go_to_last_row(&self) {
         let last_row = self.longest_diff_len();
         self.state.old_diff.borrow_mut().select(Some(last_row));
         self.state.current_diff.borrow_mut().select(Some(last_row));
@@ -173,7 +173,7 @@ impl Model {
             .select(Some(current_diff_row_index));
     }
 
-    pub fn reset_row_state(&self) {
+    pub fn go_to_first_row(&self) {
         self.state.old_diff.borrow_mut().select(Some(0));
         self.state.current_diff.borrow_mut().select(Some(0));
     }

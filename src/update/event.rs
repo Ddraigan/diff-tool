@@ -16,10 +16,10 @@ pub fn handle_event(model: &Model) -> Result<Option<Message>> {
 
 fn handle_key(key: event::KeyEvent) -> Option<Message> {
     match key.code {
-        KeyCode::Char('k') => Some(Message::RowUp),
-        KeyCode::Char('j') => Some(Message::RowDown),
-        KeyCode::Char('g') => Some(Message::Reset),
-        KeyCode::Char('G') => Some(Message::BottomRow),
+        KeyCode::Char('k') => Some(Message::PrevRow),
+        KeyCode::Char('j') => Some(Message::NextRow),
+        KeyCode::Char('g') => Some(Message::FirstRow),
+        KeyCode::Char('G') => Some(Message::LastRow),
         KeyCode::Char('q') => Some(Message::Quit),
         KeyCode::Char('c') | KeyCode::Char('C') => {
             if key.modifiers == KeyModifiers::CONTROL {

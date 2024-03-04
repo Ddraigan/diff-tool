@@ -1,10 +1,9 @@
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
-    input::event::handle_event,
     model::{Model, RunningState},
     services::{cli::Arguments, git::get_raw_diff, terminal},
-    update::update,
+    update::{event::handle_event, message::update},
     view,
 };
 
@@ -25,7 +24,7 @@ fn main() -> Result<()> {
     let diff_string = get_raw_diff(path, args.change_dir());
     model.set_diff(&diff_string);
 
-    // Will exit when RunningState is not 'Done'
+    // Will exit when RunningState is 'Done'
     while *model.running_state() != RunningState::Done {
         // Render ui
         terminal.draw(|rect| view::view(&mut model, rect))?;
