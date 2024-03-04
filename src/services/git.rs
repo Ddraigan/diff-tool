@@ -1,4 +1,7 @@
-use std::process::{Command, Stdio};
+use std::{
+    path::PathBuf,
+    process::{Command, Stdio},
+};
 
 #[derive(Default, Debug)]
 pub struct Diff {
@@ -31,6 +34,7 @@ impl Diff {
         length.try_into().unwrap_or(4)
     }
 
+    /// Gets the largest line number from each diff
     fn largest_line_number(&self) -> (usize, usize) {
         let old_diff = self
             .old_diff
@@ -139,13 +143,6 @@ impl Diff {
     }
 }
 
-// fn largest_line_number(diff: &[DiffLine]) -> usize {
-//     diff.iter()
-//         .map(|x| x.line_number().unwrap_or(0))
-//         .max()
-//         .unwrap_or(0)
-// }
-
 #[derive(Debug, Clone, Default)]
 pub struct DiffLine {
     content: String,
@@ -197,16 +194,17 @@ impl DiffKind {
 }
 
 /// Performs 'git diff -U1000 <filename>' or 'git -C [path] diff -U1000 <filename>' and returns the result as a string
-pub fn get_raw_diff(path: &str, dir_flag: bool) -> String {
+pub fn get_raw_diff(path: PathBuf, dir_flag: bool) -> String {
     let args = if !dir_flag {
-        vec!["diff", "-U1000", path]
+        vec!["diff", "-U1000", path.to_str().unwrap()]
     } else {
-        #[cfg(target_os = "windows")]
-        let delimiter = '\\';
-        #[cfg(not(target_os = "windows"))]
-        let delimiter = '/';
-        let (path, filename) = path.rsplit_once(delimiter).expect("Path to be valid");
-        vec!["-C", path, "diff", "-U1000", filename]
+        vec![
+            "-C",
+            path.parent().unwrap().to_str().unwrap(),
+            "diff",
+            "-U1000",
+            path.file_name().unwrap().to_str().unwrap(),
+        ]
     };
 
     // Process git diff <filename> command and save the stdout response
@@ -214,7 +212,7 @@ pub fn get_raw_diff(path: &str, dir_flag: bool) -> String {
         .args(args)
         .stdout(Stdio::piped())
         .output()
-        .expect("Failed to execute process");
+        .expect("Failed to execute git diff");
 
     // Convert stdout response to a string and return
     String::from_utf8(output.stdout).expect("UTF8 data to convert to string")

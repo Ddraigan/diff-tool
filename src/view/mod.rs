@@ -7,12 +7,12 @@ use ratatui::{
     Frame,
 };
 
-use crate::model::Model;
+use crate::model::App;
 
 use self::{body::draw_body, header::draw_title};
 
 /// Renders all the components
-pub fn view(model: &mut Model, f: &mut Frame) {
+pub fn view(model: &mut App, f: &mut Frame) {
     // Term size
     let size = f.size();
     check_size(&size);

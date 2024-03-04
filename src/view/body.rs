@@ -8,11 +8,11 @@ use ratatui::{
 };
 
 use crate::{
-    model::Model,
+    model::App,
     services::git::{DiffKind, DiffLine},
 };
 
-pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
+pub(crate) fn draw_body(model: &mut App, f: &mut Frame, area: Rect) {
     if model.diff().is_some() {
         // Body Layout (Left Diff & Right Diff)
         let [left_side, right_side] =
@@ -29,7 +29,7 @@ pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
 }
 
 /// Draws a diff table
-fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: bool) {
+fn render_diff_table(model: &App, f: &mut Frame, area: Rect, is_current_diff: bool) {
     let diff = if is_current_diff {
         model.diff().expect("Diff to exist").current_diff()
     } else {

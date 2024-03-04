@@ -7,15 +7,16 @@ use std::{cell::RefCell, time::Duration};
 use ratatui::widgets::TableState;
 
 use crate::{
-    services::git::Diff,
+    services::{config::AppConfig, git::Diff},
     update::message::{handle_key, Message},
 };
 
 use self::state::{RunningState, State};
 
 #[derive(Debug)]
-pub struct Model {
+pub struct App {
     running_state: RunningState,
+    config: AppConfig,
     diff: Diff,
     state: State,
     /// Default value is 250 millis
@@ -23,10 +24,11 @@ pub struct Model {
     // TODO: Model could do with a colours / styling section that can load a config for theming
 }
 
-impl Default for Model {
+impl Default for App {
     fn default() -> Self {
         Self {
             running_state: Default::default(),
+            config: AppConfig::new(),
             diff: Default::default(),
             state: Default::default(),
             tick_rate: Duration::from_millis(250),
@@ -34,7 +36,7 @@ impl Default for Model {
     }
 }
 
-impl Model {
+impl App {
     pub fn update(&mut self, msg: Message) -> Option<Message> {
         match msg {
             Message::PrevRow => {
@@ -62,7 +64,7 @@ impl Model {
         if event::poll(self.tick_rate)? {
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
-                    return Ok(handle_key(key.into()));
+                    return Ok(handle_key(key.into(), &self.config));
                 }
             }
         }

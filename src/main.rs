@@ -1,7 +1,9 @@
+use std::path::PathBuf;
+
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
-    model::{state::RunningState, Model},
+    model::{state::RunningState, App},
     services::{cli::Arguments, git::get_raw_diff, terminal},
     view,
 };
@@ -15,11 +17,11 @@ fn main() -> Result<()> {
     terminal::install_panic_hook();
 
     let args = Arguments::parse();
-    let path = args.path();
+    let path = PathBuf::from(args.path());
 
     let mut terminal = terminal::init_terminal()?;
 
-    let mut model = Model::default();
+    let mut model = App::default();
     let diff_string = get_raw_diff(path, args.change_dir());
     model.set_diff(&diff_string);
 

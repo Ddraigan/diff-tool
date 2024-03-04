@@ -1,8 +1,12 @@
 use std::fmt::{self, Display};
 
+use serde::Deserialize;
+
+use crate::services::config::AppConfig;
+
 use super::keys::Key;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub enum Message {
     PrevRow,
     NextRow,
@@ -11,17 +15,10 @@ pub enum Message {
     Quit,
 }
 
-pub fn handle_key(key: Key) -> Option<Message> {
-    match key {
-        Key::Char('k') => Some(Message::PrevRow),
-        Key::Char('j') => Some(Message::NextRow),
-        Key::Char('g') => Some(Message::FirstRow),
-        Key::Char('G') => Some(Message::LastRow),
-        Key::Char('q') => Some(Message::Quit),
-        Key::Ctrl('c') => Some(Message::Quit),
-        Key::Esc => Some(Message::Quit),
-        _ => None,
-    }
+pub fn handle_key(key: Key, config: &AppConfig) -> Option<Message> {
+    let key_string = key.to_string();
+    let key = config.keymap.get(&key_string);
+    key.cloned()
 }
 
 /// Display a user friendly short description of action

@@ -2,7 +2,7 @@ use std::fmt::{self, Display, Formatter};
 
 use crossterm::event;
 
-#[derive(PartialEq, Eq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum Key {
     /// Both Enter (or Return) and numpad Enter
     Enter,
@@ -39,6 +39,7 @@ pub enum Key {
     Char(char),
     Ctrl(char),
     Alt(char),
+    Shift(char),
     Unknown,
 }
 
@@ -140,12 +141,20 @@ impl From<event::KeyEvent> for Key {
                 kind: _,
                 state: _,
             } => Key::Alt(c),
+
             event::KeyEvent {
                 code: event::KeyCode::Char(c),
                 modifiers: event::KeyModifiers::CONTROL,
                 kind: _,
                 state: _,
             } => Key::Ctrl(c),
+
+            event::KeyEvent {
+                code: event::KeyCode::Char(c),
+                modifiers: event::KeyModifiers::SHIFT,
+                kind: _,
+                state: _,
+            } => Key::Shift(c),
 
             event::KeyEvent {
                 code: event::KeyCode::Char(c),
@@ -160,13 +169,14 @@ impl From<event::KeyEvent> for Key {
 impl Display for Key {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match *self {
-            Key::Alt(' ') => write!(f, "<Alt+Space>"),
-            Key::Ctrl(' ') => write!(f, "<Ctrl+Space>"),
-            Key::Char(' ') => write!(f, "<Space>"),
-            Key::Alt(c) => write!(f, "<Alt+{}>", c),
-            Key::Ctrl(c) => write!(f, "<Ctrl+{}>", c),
-            Key::Char(c) => write!(f, "<{}>", c),
-            _ => write!(f, "<{:?}>", self),
+            Key::Alt(' ') => write!(f, "alt+space"),
+            Key::Ctrl(' ') => write!(f, "ctrl+space"),
+            Key::Char(' ') => write!(f, "space"),
+            Key::Alt(c) => write!(f, "alt+{}", c),
+            Key::Ctrl(c) => write!(f, "ctrl+{}", c),
+            Key::Shift(c) => write!(f, "shift+{}", c.to_lowercase()),
+            Key::Char(c) => write!(f, "{}", c),
+            _ => write!(f, "{:?}", self),
         }
     }
 }
