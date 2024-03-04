@@ -21,7 +21,7 @@ fn handle_key(key: event::KeyEvent) -> Option<Message> {
         KeyCode::Char('g') => Some(Message::FirstRow),
         KeyCode::Char('G') => Some(Message::LastRow),
         KeyCode::Char('q') => Some(Message::Quit),
-        KeyCode::Char('c') if key.modifiers == KeyModifiers::CONTROL => Some(Message::Quit),
+        KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => Some(Message::Quit),
         KeyCode::Esc => Some(Message::Quit),
         _ => None,
     }

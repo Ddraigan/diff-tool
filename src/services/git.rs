@@ -7,6 +7,48 @@ pub struct Diff {
 }
 
 impl Diff {
+    pub fn longest_diff_len(&self) -> usize {
+        let old_diff = self.old_diff.len();
+        let current_diff = self.current_diff.len();
+
+        std::cmp::max(old_diff, current_diff) - 1
+    }
+
+    pub fn old_diff(&self) -> &[DiffLine] {
+        &self.old_diff
+    }
+
+    pub fn current_diff(&self) -> &[DiffLine] {
+        &self.current_diff
+    }
+
+    pub fn largest_line_number_char_len(&self) -> u16 {
+        let (old_diff, current_diff) = self.largest_line_number();
+
+        let largest_line_number = std::cmp::max(old_diff, current_diff);
+
+        let length = std::cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
+        length.try_into().unwrap_or(4)
+    }
+
+    fn largest_line_number(&self) -> (usize, usize) {
+        let old_diff = self
+            .old_diff
+            .iter()
+            .map(|x| x.line_number().unwrap_or(0))
+            .max()
+            .unwrap_or(0);
+
+        let current_diff = self
+            .old_diff
+            .iter()
+            .map(|x| x.line_number().unwrap_or(0))
+            .max()
+            .unwrap_or(0);
+
+        (old_diff, current_diff)
+    }
+
     pub fn parse_diff(diff_string: &str) -> Self {
         let lines = diff_string.split("\n");
 
@@ -95,33 +137,16 @@ impl Diff {
 
         diff
     }
-    pub fn old_diff(&self) -> &[DiffLine] {
-        &self.old_diff
-    }
-
-    pub fn current_diff(&self) -> &[DiffLine] {
-        &self.current_diff
-    }
-
-    pub fn largest_line_number_len(&self) -> u16 {
-        let largest_line_number = std::cmp::max(
-            largest_line_number(&self.old_diff),
-            largest_line_number(&self.current_diff),
-        );
-
-        let length = std::cmp::min(largest_line_number.to_string().len(), u16::MAX.into());
-        length.try_into().unwrap_or(4)
-    }
 }
 
-fn largest_line_number(diff: &[DiffLine]) -> usize {
-    diff.iter()
-        .map(|x| x.line_number().unwrap_or(0))
-        .max()
-        .unwrap_or(0)
-}
+// fn largest_line_number(diff: &[DiffLine]) -> usize {
+//     diff.iter()
+//         .map(|x| x.line_number().unwrap_or(0))
+//         .max()
+//         .unwrap_or(0)
+// }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct DiffLine {
     content: String,
     kind: DiffKind,
@@ -138,10 +163,6 @@ impl DiffLine {
         }
     }
 
-    // pub fn ref_array(&self) -> [&String; 3] {
-    //     [&self.content, &self.kind, &self.line_number]
-    // }
-
     pub fn content(&self) -> &str {
         &self.content
     }
@@ -155,11 +176,12 @@ impl DiffLine {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub enum DiffKind {
     Addition,
     Removal,
     Neutral,
+    #[default]
     Blank,
 }
 

@@ -31,9 +31,9 @@ pub(crate) fn draw_body(model: &mut Model, f: &mut Frame, area: Rect) {
 /// Draws a diff table
 fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: bool) {
     let diff = if is_current_diff {
-        model.current_diff()
+        model.diff().expect("Diff to exist").current_diff()
     } else {
-        model.old_diff()
+        model.diff().expect("Diff to exist").old_diff()
     };
 
     let diff_title = if is_current_diff { "New" } else { "Original" };
@@ -46,8 +46,8 @@ fn render_diff_table(model: &Model, f: &mut Frame, area: Rect, is_current_diff: 
         Constraint::Length(
             model
                 .diff()
-                .expect("Must have a diff to get this far")
-                .largest_line_number_len(),
+                .expect("Diff to exist")
+                .largest_line_number_char_len(),
         ),
         Constraint::Percentage(2),
         Constraint::Percentage(97),

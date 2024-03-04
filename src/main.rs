@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
-    model::{Model, RunningState},
+    model::{state::RunningState, Model},
     services::{cli::Arguments, git::get_raw_diff, terminal},
     update::{event::handle_event, message::update},
     view,

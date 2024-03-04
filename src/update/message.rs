@@ -22,7 +22,7 @@ pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
             model.go_to_last_row();
         }
         Message::FirstRow => {
-            model.go_to_first_row();
+            model.state().reset_row_state();
         }
         Message::Quit => {
             // Handle some exit stuff
