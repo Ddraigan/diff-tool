@@ -1,15 +1,8 @@
-use serde::Deserialize;
+pub mod message;
 
 use crate::model::Model;
 
-#[derive(Clone, Debug, Deserialize)]
-pub enum Message {
-    RowUp,
-    RowDown,
-    BottomRow,
-    Reset,
-    Quit,
-}
+use self::message::Message;
 
 pub fn update(model: &mut Model, msg: Message) -> Option<Message> {
     match msg {

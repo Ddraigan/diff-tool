@@ -1,8 +1,7 @@
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 
-use crate::model::Model;
-use crate::update::Message;
+use crate::{model::Model, update::message::Message};
 
 pub fn handle_event(model: &Model) -> Result<Option<Message>> {
     if event::poll(*model.tick_rate())? {
