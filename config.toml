@@ -2,7 +2,6 @@
 "ESC" = "Quit"
 "q" = "Quit"
 "Ctrl-c" = "Quit"
-"Ctrl-C" = "Quit"
 "Ctrl-d" = "Quit"
 "j" = "Down"
 "k" = "Up"
