@@ -1,3 +1,5 @@
+use std::collections::{HashMap, HashSet};
+
 use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Style},
@@ -6,7 +8,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::model::App;
+use crate::{model::App, update::message::Message};
 
 pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
     // Footer Layout (Console & Help)
@@ -18,7 +20,27 @@ pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
 
     // Help Menu
     let help_menu = draw_help(app);
+
     f.render_widget(help_menu, right);
+}
+
+fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(Vec<String>, &Message)> {
+    let mut result = Vec::new();
+    let mut processed_messages = HashSet::new();
+
+    for (_, message) in map.iter() {
+        if !processed_messages.contains(message) {
+            let keys_with_same_message: Vec<String> = map
+                .iter()
+                .filter(|(_, m)| *m == message)
+                .map(|(k, _)| k.clone())
+                .collect();
+            result.push((keys_with_same_message, message));
+            processed_messages.insert(message);
+        }
+    }
+
+    result
 }
 
 // Draws the help menu component
@@ -26,9 +48,12 @@ fn draw_help(app: &App) -> Table {
     let key_style = Style::default().fg(Color::LightCyan);
     let message_style = Style::default().fg(Color::Gray);
 
-    let keymaps = app.config().keymap().iter().map(|(key, message)| {
+    let keymaps = app.config().keymap();
+    let keymaps = combine_keys_by_value(keymaps);
+
+    let keymaps = keymaps.iter().map(|(keybinds, message)| {
         Row::new([
-            Line::styled(key, key_style),
+            Line::styled(keybinds.join(" | "), key_style),
             Line::styled(message.to_string(), message_style),
         ])
     });

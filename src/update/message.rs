@@ -2,7 +2,7 @@ use std::fmt::{self, Display};
 
 use serde::Deserialize;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Ord, PartialOrd)]
 pub enum Message {
     PrevRow,
     NextRow,
