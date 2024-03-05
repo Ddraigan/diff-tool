@@ -24,18 +24,19 @@ pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
     f.render_widget(help_menu, right);
 }
 
-fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(Vec<String>, &Message)> {
+fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(String, &Message)> {
     let mut result = Vec::new();
     let mut processed_messages = HashSet::new();
 
     for (_, message) in map.iter() {
         if !processed_messages.contains(message) {
-            let keys_with_same_message: Vec<String> = map
-                .iter()
-                .filter(|(_, m)| *m == message)
-                .map(|(k, _)| k.clone())
-                .collect();
-            result.push((keys_with_same_message, message));
+            let mut combined_keys = String::new();
+            for (k, _) in map.iter().filter(|(_, m)| *m == message) {
+                combined_keys.push_str(k);
+                combined_keys.push_str(" | ");
+            }
+            combined_keys.pop(); // Remove the trailing |
+            result.push((combined_keys, message));
             processed_messages.insert(message);
         }
     }
@@ -53,7 +54,7 @@ fn draw_help(app: &App) -> Table {
 
     let keymaps = keymaps.iter().map(|(keybinds, message)| {
         Row::new([
-            Line::styled(keybinds.join(" | "), key_style),
+            Line::styled(keybinds.to_owned(), key_style),
             Line::styled(message.to_string(), message_style),
         ])
     });
