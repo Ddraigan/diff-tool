@@ -8,7 +8,7 @@ use ratatui::widgets::TableState;
 
 use crate::{
     services::{config::AppConfig, git::Diff},
-    update::message::{handle_key, Message},
+    update::{keys::Key, message::Message},
 };
 
 use self::state::{RunningState, State};
@@ -16,12 +16,12 @@ use self::state::{RunningState, State};
 #[derive(Debug)]
 pub struct App {
     running_state: RunningState,
+    // TODO: Model could do with a colours / styling section that can load a config for theming
     config: AppConfig,
     diff: Diff,
     state: State,
     /// Default value is 250 millis
     tick_rate: Duration,
-    // TODO: Model could do with a colours / styling section that can load a config for theming
 }
 
 impl Default for App {
@@ -64,19 +64,25 @@ impl App {
         if event::poll(self.tick_rate)? {
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
-                    return Ok(handle_key(key.into(), &self.config));
+                    return Ok(self.handle_key(key.into()));
                 }
             }
         }
         Ok(None)
     }
 
-    pub fn state(&self) -> &State {
-        &self.state
+    fn handle_key(&self, key: Key) -> Option<Message> {
+        let key_string = key.to_string();
+        let key = self.config.keymap().get(&key_string);
+        key.cloned()
     }
 
-    pub fn set_tick_rate(&mut self, tick_rate: Duration) {
-        self.tick_rate = tick_rate
+    pub fn config(&self) -> &AppConfig {
+        &self.config
+    }
+
+    pub fn state(&self) -> &State {
+        &self.state
     }
 
     pub fn old_diff_state(&self) -> &RefCell<TableState> {

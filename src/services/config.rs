@@ -6,9 +6,11 @@ use serde::Deserialize;
 
 use crate::update::message::Message;
 
+type KeyMap = HashMap<String, Message>;
+
 #[derive(Debug, Default, Deserialize)]
 pub struct AppConfig {
-    pub keymap: HashMap<String, Message>,
+    keymap: HashMap<String, Message>,
 }
 
 fn get_config() -> Result<AppConfig> {
@@ -26,5 +28,9 @@ impl AppConfig {
         let keymap = get_config().unwrap().keymap;
 
         Self { keymap }
+    }
+
+    pub fn keymap(&self) -> &KeyMap {
+        &self.keymap
     }
 }

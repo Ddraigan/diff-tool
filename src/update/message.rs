@@ -2,10 +2,6 @@ use std::fmt::{self, Display};
 
 use serde::Deserialize;
 
-use crate::services::config::AppConfig;
-
-use super::keys::Key;
-
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize)]
 pub enum Message {
     PrevRow,
@@ -13,12 +9,6 @@ pub enum Message {
     LastRow,
     FirstRow,
     Quit,
-}
-
-pub fn handle_key(key: Key, config: &AppConfig) -> Option<Message> {
-    let key_string = key.to_string();
-    let key = config.keymap.get(&key_string);
-    key.cloned()
 }
 
 /// Display a user friendly short description of action

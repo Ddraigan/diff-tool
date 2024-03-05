@@ -12,48 +12,47 @@ use crate::{
     services::git::{DiffKind, DiffLine},
 };
 
-pub(crate) fn draw_body(model: &mut App, f: &mut Frame, area: Rect) {
-    if model.diff().is_some() {
-        // Body Layout (Left Diff & Right Diff)
-        let [left_side, right_side] =
-            Layout::horizontal(Constraint::from_percentages([50, 50])).areas(area);
-
-        // Old/Left Diff
-        render_diff_table(model, f, left_side, false);
-
-        // Current/Right Diff
-        return render_diff_table(model, f, right_side, true);
+pub(crate) fn render_body(model: &mut App, f: &mut Frame, area: Rect) {
+    if model.diff().is_none() {
+        // This should be a widget rather than an error
+        error!("No Diff was able to be drawn")
     }
-    // This should be a widget rather than an error
-    error!("No Diff was able to be drawn")
+
+    // Body Layout (Left Diff & Right Diff)
+    let [left_side, right_side] =
+        Layout::horizontal(Constraint::from_percentages([50, 50])).areas(area);
+
+    let line_number_char_len = model.diff().unwrap().largest_line_number_char_len();
+
+    // Old/Left Diff
+    let old_diff = model.diff().unwrap().old_diff();
+    let old_diff_table = build_diff_table(old_diff, false, line_number_char_len);
+    let mut old_diff_state = model.current_diff_state().borrow_mut();
+
+    // Current/Right Diff
+    let current_diff = model.diff().unwrap().current_diff();
+    let current_diff_table = build_diff_table(current_diff, true, line_number_char_len);
+    let mut current_diff_state = model.old_diff_state().borrow_mut();
+
+    f.render_stateful_widget(old_diff_table, left_side, &mut old_diff_state);
+    f.render_stateful_widget(current_diff_table, right_side, &mut current_diff_state)
 }
 
 /// Draws a diff table
-fn render_diff_table(model: &App, f: &mut Frame, area: Rect, is_current_diff: bool) {
-    let diff = if is_current_diff {
-        model.diff().expect("Diff to exist").current_diff()
-    } else {
-        model.diff().expect("Diff to exist").old_diff()
-    };
-
+fn build_diff_table(diff: &[DiffLine], is_current_diff: bool, line_number_char_len: u16) -> Table {
     let diff_title = if is_current_diff { "New" } else { "Original" };
 
-    let rows = parse_diff_rows(diff);
+    let rows = diff.iter().map(parse_diff_line);
 
     // Dynamic column width
     let widths = [
         // Line Number col depends on the largest line number
-        Constraint::Length(
-            model
-                .diff()
-                .expect("Diff to exist")
-                .largest_line_number_char_len(),
-        ),
+        Constraint::Length(line_number_char_len),
         Constraint::Percentage(2),
         Constraint::Percentage(97),
     ];
 
-    let table = Table::new(rows, widths)
+    Table::new(rows, widths)
         .block(
             Block::bordered()
                 .title(Span::styled(
@@ -70,19 +69,7 @@ fn render_diff_table(model: &App, f: &mut Frame, area: Rect, is_current_diff: bo
         } else {
             Style::default()
         })
-        .highlight_symbol(">>");
-
-    let mut state = if is_current_diff {
-        model.current_diff_state().borrow_mut()
-    } else {
-        model.old_diff_state().borrow_mut()
-    };
-
-    f.render_stateful_widget(table, area, &mut state);
-}
-
-fn parse_diff_rows(diff_content: &[DiffLine]) -> Vec<Row> {
-    diff_content.iter().map(parse_diff_line).collect()
+        .highlight_symbol(">>")
 }
 
 fn parse_diff_line(line: &DiffLine) -> Row {
