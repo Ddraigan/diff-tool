@@ -12,7 +12,7 @@ use crate::{
     services::git::{DiffKind, DiffLine},
 };
 
-pub(crate) fn render_body(model: &mut App, f: &mut Frame, area: Rect) {
+pub(super) fn render_body(model: &mut App, f: &mut Frame, area: Rect) {
     if model.diff().is_none() {
         // This should be a widget rather than an error
         error!("No Diff was able to be drawn")

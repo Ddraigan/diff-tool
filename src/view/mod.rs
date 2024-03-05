@@ -9,7 +9,7 @@ use ratatui::{
 
 use crate::model::App;
 
-use self::{body::render_body, footer::render_footer, header::draw_title};
+use self::{body::render_body, footer::render_footer, header::render_header};
 
 /// Renders all the components
 pub fn view(model: &mut App, f: &mut Frame) {
@@ -24,7 +24,7 @@ pub fn view(model: &mut App, f: &mut Frame) {
     ])
     .areas(size);
 
-    draw_title(f, header);
+    render_header(f, header);
 
     render_body(model, f, body);
 

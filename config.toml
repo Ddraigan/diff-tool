@@ -7,3 +7,5 @@
 "k" = "PrevRow"
 "g" = "FirstRow"
 "Shift+g" = "LastRow"
+"h" = "NextRow"
+"l" = "PrevRow"

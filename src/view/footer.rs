@@ -1,14 +1,14 @@
 use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Style},
-    text::Span,
-    widgets::{Block, BorderType, Cell, Row, Table},
+    text::Line,
+    widgets::{Block, BorderType, Row, Table},
     Frame,
 };
 
 use crate::model::App;
 
-pub fn render_footer(app: &App, area: Rect, f: &mut Frame) {
+pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
     // Footer Layout (Console & Help)
     let [_left, right] = Layout::horizontal(Constraint::from_percentages([50, 50])).areas(area);
 
@@ -21,19 +21,19 @@ pub fn render_footer(app: &App, area: Rect, f: &mut Frame) {
     f.render_widget(help_menu, right);
 }
 
-/// Draws the help menu component
+// Draws the help menu component
 fn draw_help(app: &App) -> Table {
     let key_style = Style::default().fg(Color::LightCyan);
     let message_style = Style::default().fg(Color::Gray);
 
-    let keys = app.config().keymap().iter().map(|(key, message)| {
+    let keymaps = app.config().keymap().iter().map(|(key, message)| {
         Row::new([
-            Cell::from(Span::styled(key, key_style)),
-            Cell::from(Span::styled(message.to_string(), message_style)),
+            Line::styled(key, key_style),
+            Line::styled(message.to_string(), message_style),
         ])
     });
 
-    Table::new(keys, Constraint::from_percentages([20, 80])).block(
+    Table::new(keymaps, Constraint::from_percentages([20, 80])).block(
         Block::bordered()
             .border_type(BorderType::Plain)
             .title("Help"),
