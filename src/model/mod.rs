@@ -5,7 +5,7 @@ use crossterm::event::{self, Event, KeyEventKind};
 use std::time::Duration;
 
 use crate::{
-    services::{config::AppConfig, git::Diff},
+    services::{config::Config, git::Diff},
     update::{keys::Key, message::Message},
 };
 
@@ -15,7 +15,7 @@ use self::state::{RunningState, State};
 pub struct App {
     running_state: RunningState,
     // TODO: Model could do with a colours / styling section that can load a config for theming
-    config: AppConfig,
+    config: Config,
     diff: Diff,
     state: State,
     /// Default value is 250 millis
@@ -26,7 +26,8 @@ impl Default for App {
     fn default() -> Self {
         Self {
             running_state: Default::default(),
-            config: AppConfig::new(),
+            // TODO: This should be handled
+            config: Config::new().expect("Unable to get Conifguration"),
             diff: Default::default(),
             state: Default::default(),
             tick_rate: Duration::from_millis(250),
@@ -76,7 +77,7 @@ impl App {
         key.cloned()
     }
 
-    pub fn config(&self) -> &AppConfig {
+    pub fn config(&self) -> &Config {
         &self.config
     }
 
