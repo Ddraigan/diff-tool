@@ -64,6 +64,7 @@ impl App {
         if event::poll(self.tick_rate)? {
             if let Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
+                    // Converts Crossterm::Event::Key into our update::Key
                     return Ok(self.handle_key(key.into()));
                 }
             }
@@ -108,11 +109,11 @@ impl App {
         &self.running_state
     }
 
-    pub fn quit(&mut self) {
+    fn quit(&mut self) {
         self.running_state = RunningState::Done
     }
 
-    pub fn go_to_last_row(&self) {
+    fn go_to_last_row(&self) {
         let last_row = self.diff.longest_diff_len();
         self.state.old_diff().borrow_mut().select(Some(last_row));
         self.state
@@ -121,7 +122,7 @@ impl App {
             .select(Some(last_row));
     }
 
-    pub fn next_row(&self) {
+    fn next_row(&self) {
         let old_diff_row_index = match self.state.old_diff().borrow().selected() {
             Some(i) => {
                 if i >= self.diff.old_diff().len() - 1 {
@@ -154,7 +155,7 @@ impl App {
             .select(Some(current_diff_row_index));
     }
 
-    pub fn previous_row(&self) {
+    fn previous_row(&self) {
         let old_diff_row_index = match self.state.old_diff().borrow().selected() {
             Some(i) => {
                 if i == 0 {
