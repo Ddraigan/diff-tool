@@ -30,12 +30,18 @@ fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(String, &Messag
 
     for (_, message) in map.iter() {
         if !processed_messages.contains(message) {
-            let mut combined_keys = String::new();
-            for (k, _) in map.iter().filter(|(_, m)| *m == message) {
-                combined_keys.push_str(k);
-                combined_keys.push_str(" | ");
-            }
-            combined_keys.pop(); // Remove the trailing |
+            let combined_keys = map
+                .into_iter()
+                .filter(|(_, m)| *m == message)
+                .enumerate()
+                .map(|(i, (k, _))| {
+                    if i == 0 {
+                        k.to_owned()
+                    } else {
+                        format!(" | {k}")
+                    }
+                })
+                .collect::<String>();
             result.push((combined_keys, message));
             processed_messages.insert(message);
         }
@@ -50,16 +56,16 @@ fn draw_help(app: &App) -> Table {
     let message_style = Style::default().fg(Color::Gray);
 
     let keymaps = app.config().keymap();
-    let keymaps = combine_keys_by_value(keymaps);
+    let combined_keymaps = combine_keys_by_value(keymaps);
 
-    let keymaps = keymaps.iter().map(|(keybinds, message)| {
+    let keymap_rows = combined_keymaps.iter().map(|(keybinds, message)| {
         Row::new([
             Line::styled(keybinds.to_owned(), key_style),
             Line::styled(message.to_string(), message_style),
         ])
     });
 
-    Table::new(keymaps, Constraint::from_percentages([20, 80])).block(
+    Table::new(keymap_rows, Constraint::from_percentages([20, 80])).block(
         Block::bordered()
             .border_type(BorderType::Plain)
             .title("Help"),
