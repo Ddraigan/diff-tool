@@ -1,15 +1,24 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Deref};
 
 use anyhow::Result;
 use serde::Deserialize;
 
 use crate::update::message::Message;
 
-type KeyMap = HashMap<String, Message>;
-
 #[derive(Debug, Default, Deserialize)]
 pub struct Config {
-    keymap: HashMap<String, Message>,
+    keymap: KeyMap,
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+pub struct KeyMap(pub HashMap<String, Message>);
+
+impl Deref for KeyMap {
+    type Target = HashMap<String, Message>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl Config {

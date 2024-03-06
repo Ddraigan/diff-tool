@@ -17,3 +17,4 @@ For git diffing in the terminal
 - [ ] Anchor points on diff changes e.g keymap to jump to the next added line
 - [ ] Option of diffing full document or diffing anchor points
 - [ ] Add scroll bar
+- [ ] Need default config / user config options
