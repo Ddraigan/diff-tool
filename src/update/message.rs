@@ -6,8 +6,8 @@ use serde::Deserialize;
 pub enum Message {
     PrevRow,
     NextRow,
-    LastRow,
     FirstRow,
+    LastRow,
     Quit,
 }
 
