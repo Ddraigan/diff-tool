@@ -4,11 +4,11 @@ use serde::Deserialize;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Ord, PartialOrd)]
 pub enum Message {
+    Quit,
     PrevRow,
     NextRow,
     FirstRow,
     LastRow,
-    Quit,
 }
 
 /// Display a user friendly short description of action

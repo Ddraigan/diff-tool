@@ -2,9 +2,7 @@ pub mod state;
 
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyEventKind};
-use std::{cell::RefCell, time::Duration};
-
-use ratatui::widgets::TableState;
+use std::time::Duration;
 
 use crate::{
     services::{config::AppConfig, git::Diff},
@@ -84,14 +82,6 @@ impl App {
 
     pub fn state(&self) -> &State {
         &self.state
-    }
-
-    pub fn old_diff_state(&self) -> &RefCell<TableState> {
-        &self.state.old_diff()
-    }
-
-    pub fn current_diff_state(&self) -> &RefCell<TableState> {
-        &self.state.current_diff()
     }
 
     pub fn diff(&self) -> Option<&Diff> {

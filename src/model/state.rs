@@ -25,11 +25,11 @@ impl Default for State {
 }
 
 impl State {
-    pub(super) fn old_diff(&self) -> &RefCell<TableState> {
+    pub fn old_diff(&self) -> &RefCell<TableState> {
         &self.old_diff
     }
 
-    pub(super) fn current_diff(&self) -> &RefCell<TableState> {
+    pub fn current_diff(&self) -> &RefCell<TableState> {
         &self.current_diff
     }
 
