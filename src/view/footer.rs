@@ -19,8 +19,7 @@ pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
     // f.render_widget(console, footer_chunks[0]);
 
     // Help Menu
-    let help_menu = draw_help(app);
-
+    let help_menu = build_help_table(app);
     f.render_widget(help_menu, right);
 }
 
@@ -36,9 +35,9 @@ fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(String, &Messag
                 .enumerate()
                 .map(|(i, (k, _))| {
                     if i == 0 {
-                        k.to_owned()
+                        k.to_owned().to_uppercase()
                     } else {
-                        format!(" | {k}")
+                        format!(" | {}", k.to_uppercase())
                     }
                 })
                 .collect::<String>();
@@ -50,13 +49,24 @@ fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(String, &Messag
     result
 }
 
+fn longest_combined_keymap(combined_keymaps: &Vec<(String, &Message)>) -> u16 {
+    combined_keymaps
+        .iter()
+        .map(|(keys, _)| keys.len().try_into().unwrap())
+        .max()
+        .unwrap()
+}
+
 // Draws the help menu component
-fn draw_help(app: &App) -> Table {
+fn build_help_table(app: &App) -> Table {
     let key_style = Style::default().fg(Color::LightCyan);
     let message_style = Style::default().fg(Color::Gray);
 
     let keymaps = app.config().keymap();
     let combined_keymaps = combine_keys_by_value(keymaps);
+
+    let longest_string = longest_combined_keymap(&combined_keymaps);
+    let widths = [Constraint::Length(longest_string), Constraint::Min(10)];
 
     let keymap_rows = combined_keymaps.iter().map(|(keybinds, message)| {
         Row::new([
@@ -65,7 +75,7 @@ fn draw_help(app: &App) -> Table {
         ])
     });
 
-    Table::new(keymap_rows, Constraint::from_percentages([20, 80])).block(
+    Table::new(keymap_rows, widths).block(
         Block::bordered()
             .border_type(BorderType::Plain)
             .title("Help"),
