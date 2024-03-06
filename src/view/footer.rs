@@ -63,7 +63,8 @@ fn build_help_table(app: &App) -> Table {
     let message_style = Style::default().fg(Color::Gray);
 
     let keymaps = app.config().keymap();
-    let combined_keymaps = combine_keys_by_value(keymaps);
+    let mut combined_keymaps = combine_keys_by_value(keymaps);
+    combined_keymaps.sort_unstable_by_key(|(_, message)| *message);
 
     let longest_string = longest_combined_keymap(&combined_keymaps);
     let widths = [Constraint::Length(longest_string), Constraint::Min(10)];
