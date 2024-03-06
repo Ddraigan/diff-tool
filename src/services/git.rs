@@ -1,5 +1,5 @@
 use std::{
-    path::PathBuf,
+    path::Path,
     process::{Command, Stdio},
 };
 
@@ -194,7 +194,7 @@ impl DiffKind {
 }
 
 /// Performs 'git diff -U1000 <filename>' or 'git -C [path] diff -U1000 <filename>' and returns the result as a string
-pub fn get_raw_diff(path: &PathBuf, dir_flag: bool) -> String {
+pub fn get_raw_diff(path: &Path, dir_flag: bool) -> String {
     let args = if !dir_flag {
         vec!["diff", "-U1000", path.to_str().unwrap()]
     } else {

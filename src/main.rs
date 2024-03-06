@@ -15,12 +15,11 @@ fn main() -> Result<()> {
     terminal::install_panic_hook();
 
     let args = Arguments::parse();
-    let path = args.path();
 
     let mut terminal = terminal::init_terminal()?;
 
     let mut model = App::default();
-    let diff_string = get_raw_diff(path, args.change_dir());
+    let diff_string = get_raw_diff(args.path(), args.change_dir());
     model.set_diff(&diff_string);
 
     // Will exit when RunningState is 'Done'
