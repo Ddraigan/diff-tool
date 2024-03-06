@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use clap::Parser;
 
 #[derive(Parser, Default, Debug)]
@@ -7,13 +9,13 @@ pub struct Arguments {
     /// Giving a full path allows diff-tool to diff outside of the git repo
     change_dir: bool,
     /// File to diff with
-    path: String,
+    path: PathBuf,
     // #[clap(short, long, default_value_t = 250)]
     // tick_rate: u64,
 }
 
 impl Arguments {
-    pub fn path(&self) -> &str {
+    pub fn path(&self) -> &PathBuf {
         &self.path
     }
 

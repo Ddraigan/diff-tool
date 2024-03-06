@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
@@ -17,7 +15,7 @@ fn main() -> Result<()> {
     terminal::install_panic_hook();
 
     let args = Arguments::parse();
-    let path = PathBuf::from(args.path());
+    let path = args.path();
 
     let mut terminal = terminal::init_terminal()?;
 
