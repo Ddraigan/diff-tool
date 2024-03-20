@@ -19,6 +19,7 @@ pub struct App {
     diff: Diff,
     diff_state: DiffState,
     console: Vec<String>,
+    console_state: ,
     /// Default value is 250 millis
     tick_rate: Duration,
 }
