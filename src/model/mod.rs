@@ -2,7 +2,8 @@ pub mod state;
 
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyEventKind};
-use std::time::Duration;
+use ratatui::widgets::ListState;
+use std::{cell::RefCell, time::Duration};
 
 use crate::{
     services::{config::Config, git::Diff},
@@ -19,7 +20,7 @@ pub struct App {
     diff: Diff,
     diff_state: DiffState,
     console: Vec<String>,
-    console_state: ,
+    console_state: RefCell<ListState>,
     /// Default value is 250 millis
     tick_rate: Duration,
 }
@@ -28,19 +29,41 @@ impl Default for App {
     fn default() -> Self {
         Self {
             running_state: Default::default(),
-            // TODO: This should be handled
+            // TODO: This should be handled with a default config probably
             config: Config::new().expect("Unable to get Conifguration"),
             diff: Default::default(),
             diff_state: Default::default(),
             console: Default::default(),
+            console_state: Default::default(),
             tick_rate: Duration::from_millis(250),
         }
     }
 }
 
 impl App {
-    pub fn update(&mut self, msg: Message) -> Option<Message> {
+    pub fn console_state(&self) -> &RefCell<ListState> {
+        &self.console_state
+    }
+    fn handle_console(&mut self, msg: Message) {
         self.console.push(msg.to_string());
+        let console_state_index = match self.console_state.borrow().selected() {
+            Some(i) => {
+                if i >= self.console.len() - 1 {
+                    0
+                } else {
+                    i + 1
+                }
+            }
+            None => 0,
+        };
+
+        self.console_state
+            .borrow_mut()
+            .select(Some(console_state_index))
+    }
+
+    pub fn update(&mut self, msg: Message) -> Option<Message> {
+        self.handle_console(msg);
         match msg {
             Message::PrevRow => {
                 self.previous_row();

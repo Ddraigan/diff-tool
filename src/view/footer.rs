@@ -16,7 +16,8 @@ pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
 
     // Console Section
     let console = draw_console(app);
-    f.render_widget(console, left);
+    let mut console_state = app.console_state().borrow_mut();
+    f.render_stateful_widget(console, left, &mut console_state);
 
     // Help Menu
     let help_menu = build_help_table(app);
