@@ -2,9 +2,9 @@ use std::collections::{HashMap, HashSet};
 
 use ratatui::{
     layout::{Constraint, Layout, Rect},
-    style::{Color, Style},
+    style::{Color, Modifier, Style},
     text::Line,
-    widgets::{Block, BorderType, Row, Table},
+    widgets::{Block, BorderType, List, ListDirection, Row, Table},
     Frame,
 };
 
@@ -12,11 +12,11 @@ use crate::{model::App, update::message::Message};
 
 pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
     // Footer Layout (Console & Help)
-    let [_left, right] = Layout::horizontal(Constraint::from_percentages([50, 50])).areas(area);
+    let [left, right] = Layout::horizontal(Constraint::from_percentages([50, 50])).areas(area);
 
-    // // Console Section
-    // let console = draw_console(model);
-    // f.render_widget(console, footer_chunks[0]);
+    // Console Section
+    let console = draw_console(app);
+    f.render_widget(console, left);
 
     // Help Menu
     let help_menu = build_help_table(app);
@@ -83,21 +83,27 @@ fn build_help_table(app: &App) -> Table {
     )
 }
 
-// fn draw_console(model: &Model) -> Table {
-//     let lines: Vec<Row> = state
-//         .console()
-//         .unwrap_or(&vec![])
-//         .iter()
-//         .map(|item| Row::new(vec![Cell::from(Span::from(item.to_owned()))]))
-//         .collect();
-//
-//     Table::new(lines)
-//         .block(
-//             Block::default()
-//                 .borders(Borders::ALL)
-//                 .style(Style::default().fg(Color::White))
-//                 .border_type(BorderType::Plain),
-//         )
-//         .widths(&[Constraint::Length(11), Constraint::Min(20)])
-//         .column_spacing(1)
-// }
+fn draw_console(app: &App) -> List {
+    let items = app.console().to_owned();
+    List::new(items)
+        .block(Block::bordered().title("List"))
+        .style(Style::default().fg(Color::White))
+        .highlight_style(Style::default().add_modifier(Modifier::ITALIC))
+        .highlight_symbol(">>")
+        .repeat_highlight_symbol(true)
+        .direction(ListDirection::TopToBottom)
+    // let rows = app
+    //     .console()
+    //     .iter()
+    //     .map(|console_entry| Row::new(vec![Line::from(console_entry.clone())]));
+    //
+    // let width = Constraint::from_percentages([100]);
+    //
+    // Table::new(rows, width)
+    //     .block(
+    //         Block::bordered()
+    //             .style(Style::default().fg(Color::White))
+    //             .border_type(BorderType::Plain),
+    //     )
+    //     .column_spacing(1)
+}

@@ -8,7 +8,7 @@ use diff_tool::{
 
 fn main() -> Result<()> {
     let env = env_logger::Env::default()
-        .filter_or("MY_LOG_LEVEL", "trace")
+        .filter_or("MY_LOG_LEVEL", "error")
         .write_style_or("MY_LOG_STYLE", "always");
 
     env_logger::init_from_env(env);

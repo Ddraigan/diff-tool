@@ -9,7 +9,7 @@ use crate::{
     update::{keys::Key, message::Message},
 };
 
-use self::state::{RunningState, State};
+use self::state::{DiffState, RunningState};
 
 #[derive(Debug)]
 pub struct App {
@@ -17,7 +17,8 @@ pub struct App {
     // TODO: Model could do with a colours / styling section that can load a config for theming
     config: Config,
     diff: Diff,
-    state: State,
+    diff_state: DiffState,
+    console: Vec<String>,
     /// Default value is 250 millis
     tick_rate: Duration,
 }
@@ -29,7 +30,8 @@ impl Default for App {
             // TODO: This should be handled
             config: Config::new().expect("Unable to get Conifguration"),
             diff: Default::default(),
-            state: Default::default(),
+            diff_state: Default::default(),
+            console: Default::default(),
             tick_rate: Duration::from_millis(250),
         }
     }
@@ -37,6 +39,7 @@ impl Default for App {
 
 impl App {
     pub fn update(&mut self, msg: Message) -> Option<Message> {
+        self.console.push(msg.to_string());
         match msg {
             Message::PrevRow => {
                 self.previous_row();
@@ -48,7 +51,7 @@ impl App {
                 self.go_to_last_row();
             }
             Message::FirstRow => {
-                self.state().reset_row_state();
+                self.diff_state().reset_row_state();
             }
             Message::Quit => {
                 // Handle some exit stuff
@@ -77,12 +80,20 @@ impl App {
         key.cloned()
     }
 
+    pub fn push_console(&mut self, value: String) {
+        self.console.push(value)
+    }
+
+    pub fn console(&self) -> &Vec<String> {
+        &self.console
+    }
+
     pub fn config(&self) -> &Config {
         &self.config
     }
 
-    pub fn state(&self) -> &State {
-        &self.state
+    pub fn diff_state(&self) -> &DiffState {
+        &self.diff_state
     }
 
     pub fn diff(&self) -> Option<&Diff> {
@@ -106,15 +117,18 @@ impl App {
 
     fn go_to_last_row(&self) {
         let last_row = self.diff.longest_diff_len();
-        self.state.old_diff().borrow_mut().select(Some(last_row));
-        self.state
+        self.diff_state
+            .old_diff()
+            .borrow_mut()
+            .select(Some(last_row));
+        self.diff_state
             .current_diff()
             .borrow_mut()
             .select(Some(last_row));
     }
 
     fn next_row(&self) {
-        let old_diff_row_index = match self.state.old_diff().borrow().selected() {
+        let old_diff_row_index = match self.diff_state.old_diff().borrow().selected() {
             Some(i) => {
                 if i >= self.diff.old_diff().len() - 1 {
                     0
@@ -125,7 +139,7 @@ impl App {
             None => 0,
         };
 
-        let current_diff_row_index = match self.state.current_diff().borrow().selected() {
+        let current_diff_row_index = match self.diff_state.current_diff().borrow().selected() {
             Some(j) => {
                 if j >= self.diff.current_diff().len() - 1 {
                     0
@@ -136,18 +150,18 @@ impl App {
             None => 0,
         };
 
-        self.state
+        self.diff_state
             .old_diff()
             .borrow_mut()
             .select(Some(old_diff_row_index));
-        self.state
+        self.diff_state
             .current_diff()
             .borrow_mut()
             .select(Some(current_diff_row_index));
     }
 
     fn previous_row(&self) {
-        let old_diff_row_index = match self.state.old_diff().borrow().selected() {
+        let old_diff_row_index = match self.diff_state.old_diff().borrow().selected() {
             Some(i) => {
                 if i == 0 {
                     self.diff.old_diff().len() - 1
@@ -158,7 +172,7 @@ impl App {
             None => 0,
         };
 
-        let current_diff_row_index = match self.state.current_diff().borrow().selected() {
+        let current_diff_row_index = match self.diff_state.current_diff().borrow().selected() {
             Some(j) => {
                 if j == 0 {
                     self.diff.current_diff().len() - 1
@@ -169,11 +183,11 @@ impl App {
             None => 0,
         };
 
-        self.state
+        self.diff_state
             .old_diff()
             .borrow_mut()
             .select(Some(old_diff_row_index));
-        self.state
+        self.diff_state
             .current_diff()
             .borrow_mut()
             .select(Some(current_diff_row_index));

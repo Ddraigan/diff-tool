@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use ratatui::widgets::TableState;
 
 #[derive(Debug)]
-pub struct State {
+pub struct DiffState {
     old_diff: RefCell<TableState>,
     current_diff: RefCell<TableState>,
 }
@@ -15,7 +15,7 @@ pub enum RunningState {
     Done,
 }
 
-impl Default for State {
+impl Default for DiffState {
     fn default() -> Self {
         Self {
             old_diff: RefCell::from(TableState::default().with_selected(0)),
@@ -24,7 +24,7 @@ impl Default for State {
     }
 }
 
-impl State {
+impl DiffState {
     pub fn old_diff(&self) -> &RefCell<TableState> {
         &self.old_diff
     }

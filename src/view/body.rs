@@ -27,12 +27,12 @@ pub(super) fn render_body(model: &mut App, f: &mut Frame, area: Rect) {
     // Old/Left Diff
     let old_diff = model.diff().unwrap().old_diff();
     let old_diff_table = build_diff_table(old_diff, false, line_number_char_len);
-    let mut old_diff_state = model.state().old_diff().borrow_mut();
+    let mut old_diff_state = model.diff_state().old_diff().borrow_mut();
 
     // Current/Right Diff
     let current_diff = model.diff().unwrap().current_diff();
     let current_diff_table = build_diff_table(current_diff, true, line_number_char_len);
-    let mut current_diff_state = model.state().current_diff().borrow_mut();
+    let mut current_diff_state = model.diff_state().current_diff().borrow_mut();
 
     f.render_stateful_widget(old_diff_table, left_side, &mut old_diff_state);
     f.render_stateful_widget(current_diff_table, right_side, &mut current_diff_state)
