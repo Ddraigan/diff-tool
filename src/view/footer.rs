@@ -87,9 +87,14 @@ fn build_help_table(app: &App) -> Table {
 fn draw_console(app: &App) -> List {
     let items = app.console().to_owned();
     List::new(items)
-        .block(Block::bordered().title("List"))
+        .block(Block::bordered().title("Console"))
         .style(Style::default().fg(Color::White))
-        .highlight_style(Style::default().add_modifier(Modifier::ITALIC))
+        .highlight_style(
+            Style::default()
+                .fg(Color::Black)
+                .bg(Color::Magenta)
+                .add_modifier(Modifier::ITALIC),
+        )
         .highlight_symbol(">>")
         .repeat_highlight_symbol(true)
         .direction(ListDirection::TopToBottom)
