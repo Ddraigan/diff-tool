@@ -1,0 +1,9 @@
+[keymap]
+"esc" = "Quit"
+"q" = "Quit"
+"ctrl+c" = "Quit"
+"ctrl+d" = "Quit"
+"j" = "NextRow"
+"k" = "PrevRow"
+"g" = "FirstRow"
+"Shift+g" = "LastRow"

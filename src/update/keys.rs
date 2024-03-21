@@ -2,17 +2,13 @@ use std::fmt::{self, Display, Formatter};
 
 use crossterm::event;
 
-#[derive(PartialEq, Eq, Clone, Copy, Hash, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
 pub enum Key {
     /// Both Enter (or Return) and numpad Enter
     Enter,
-    /// Tabulation key
     Tab,
-    /// Backspace key
     Backspace,
-    /// Escape key
     Esc,
-
     /// Left arrow
     Left,
     /// Right arrow
@@ -21,65 +17,36 @@ pub enum Key {
     Up,
     /// Down arrow
     Down,
-
-    /// Insert key
     Ins,
-    /// Delete key
     Delete,
-    /// Home key
     Home,
-    /// End key
     End,
-    /// Page Up key
     PageUp,
-    /// Page Down key
     PageDown,
-
-    /// F0 key
     F0,
-    /// F1 key
     F1,
-    /// F2 key
     F2,
-    /// F3 key
     F3,
-    /// F4 key
     F4,
-    /// F5 key
     F5,
-    /// F6 key
     F6,
-    /// F7 key
     F7,
-    /// F8 key
     F8,
-    /// F9 key
     F9,
-    /// F10 key
     F10,
-    /// F11 key
     F11,
-    /// F12 key
     F12,
     Char(char),
     Ctrl(char),
     Alt(char),
+    Shift(char),
     Unknown,
 }
 
 impl Key {
-    /// If exit
-    pub fn is_exit(&self) -> bool {
-        matches!(self, Key::Ctrl('c') | Key::Char('q') | Key::Esc)
-    }
-
     /// Returns the function key corresponding to the given number
     ///
     /// 1 -> F1, etc...
-    ///
-    /// # Panics
-    ///
-    /// If `n == 0 || n > 12`
     pub fn from_f(n: u8) -> Key {
         match n {
             0 => Key::F0,
@@ -95,21 +62,10 @@ impl Key {
             10 => Key::F10,
             11 => Key::F11,
             12 => Key::F12,
-            _ => panic!("unknown function key: F{}", n),
-        }
-    }
-}
-
-impl Display for Key {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match *self {
-            Key::Alt(' ') => write!(f, "<Alt+Space>"),
-            Key::Ctrl(' ') => write!(f, "<Ctrl+Space>"),
-            Key::Char(' ') => write!(f, "<Space>"),
-            Key::Alt(c) => write!(f, "<Alt+{}>", c),
-            Key::Ctrl(c) => write!(f, "<Ctrl+{}>", c),
-            Key::Char(c) => write!(f, "<{}>", c),
-            _ => write!(f, "<{:?}>", self),
+            _ => {
+                log::warn!("unknown function key: F{}", n);
+                Key::Unknown
+            }
         }
     }
 }
@@ -185,6 +141,7 @@ impl From<event::KeyEvent> for Key {
                 kind: _,
                 state: _,
             } => Key::Alt(c),
+
             event::KeyEvent {
                 code: event::KeyCode::Char(c),
                 modifiers: event::KeyModifiers::CONTROL,
@@ -194,10 +151,32 @@ impl From<event::KeyEvent> for Key {
 
             event::KeyEvent {
                 code: event::KeyCode::Char(c),
+                modifiers: event::KeyModifiers::SHIFT,
+                kind: _,
+                state: _,
+            } => Key::Shift(c),
+
+            event::KeyEvent {
+                code: event::KeyCode::Char(c),
                 ..
             } => Key::Char(c),
 
             _ => Key::Unknown,
+        }
+    }
+}
+
+impl Display for Key {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match *self {
+            Key::Alt(' ') => write!(f, "alt+space"),
+            Key::Ctrl(' ') => write!(f, "ctrl+space"),
+            Key::Char(' ') => write!(f, "space"),
+            Key::Alt(c) => write!(f, "alt+{}", c),
+            Key::Ctrl(c) => write!(f, "ctrl+{}", c),
+            Key::Shift(c) => write!(f, "shift+{}", c.to_lowercase()),
+            Key::Char(c) => write!(f, "{}", c),
+            _ => write!(f, "{:?}", self),
         }
     }
 }
