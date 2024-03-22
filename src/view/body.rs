@@ -7,7 +7,7 @@ use ratatui::{
 };
 
 use crate::{
-    model::{state::RunningState, App},
+    model::App,
     services::git::{DiffKind, DiffLine},
 };
 
