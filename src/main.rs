@@ -32,12 +32,12 @@ fn main() -> Result<()> {
     model.set_diff(&diff_string);
 
     // Will exit when RunningState is 'Done'
-    let mut log_len = model.console().len();
+    let mut previous_log_length = model.console().len();
     while *model.running_state() != RunningState::Done {
         // Update console on new log
-        let new_log_len = model.console().len();
-        if log_len != new_log_len {
-            log_len = new_log_len;
+        let current_log_length = model.console().len();
+        if previous_log_length != current_log_length {
+            previous_log_length = current_log_length;
             model.handle_console();
         }
 
