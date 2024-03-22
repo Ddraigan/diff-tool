@@ -1,4 +1,3 @@
-use log::error;
 use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Modifier, Style},
@@ -15,7 +14,7 @@ use crate::{
 pub(super) fn render_body(model: &mut App, f: &mut Frame, area: Rect) {
     if model.diff().is_none() {
         // This should be a widget rather than an error
-        error!("No Diff was able to be drawn")
+        panic!("No Diff was able to be drawn")
     }
 
     // Body Layout (Left Diff & Right Diff)
