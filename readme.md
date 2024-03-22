@@ -4,17 +4,13 @@ For git diffing in the terminal
 
 # Todo
 
-- [x] Diff scrolling
-- [x] Sync diff scrolling
-- [x] Dynamic line number width
-- [x] Line number column text align right
-- [x] Diff add header
-- [x] Runnable from any directory (not just with a git repo)
 - [ ] Colour theme support
-- [ ] Implement run action display log (Maybe?)
-- [x] Implement help section
 - [ ] (Bug) Panicking doesn't clear properly
-- [ ] Anchor points on diff changes e.g keymap to jump to the next added line
+- [ ] Anchor points on diff changes e.g keymap to jump to the next anchored line
 - [ ] Option of diffing full document or diffing anchor points
 - [ ] Add scroll bar
 - [ ] Need default config / user config options
+- [ ] Multi document diffs could be handled a little cleaner
+- [ ] Log console should be scrollable to get history
+- [ ] Probably should log to a file too?
+- [ ] Colour to the log console e.g - INFO would be cyan
