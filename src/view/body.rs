@@ -1,4 +1,3 @@
-use log::error;
 use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Modifier, Style},
