@@ -46,8 +46,8 @@ fn main() -> Result<()> {
 
         let mut current_msg = model.handle_event()?;
 
-        while current_msg.is_some() {
-            current_msg = model.update(current_msg.unwrap());
+        while let Some(msg) = current_msg {
+            current_msg = model.update(msg);
         }
     }
 
