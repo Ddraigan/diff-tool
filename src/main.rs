@@ -1,60 +1,57 @@
-use std::{
-    io::Write,
-    sync::{Arc, Mutex},
-};
+use std::sync::{Arc, Mutex};
 
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
-    model::{state::RunningState, App},
-    services::{cli::Arguments, git::get_raw_diff, logger::VecWriter, terminal},
+    app::{state::RunningState, App},
+    services::{
+        cli::Arguments,
+        git::get_raw_diff,
+        logger::{init_logging, VecWriter},
+        terminal,
+    },
     view,
 };
 
 fn main() -> Result<()> {
-    let logs = Arc::new(Mutex::new(Vec::new()));
-    let writer = VecWriter { logs: logs.clone() };
-
-    env_logger::Builder::new()
-        .target(env_logger::Target::Pipe(Box::new(writer)))
-        .filter(None, log::LevelFilter::Trace)
-        .format(|buf, record| writeln!(buf, "[{}] - {}", record.level(), record.args()))
-        .init();
-    terminal::install_panic_hook();
-
-    let mut model = App::default(logs);
-
     let args = Arguments::parse();
 
-    let mut terminal = terminal::init_terminal()?;
+    // Set up logging that can be sent to the application console
+    let logs = Arc::new(Mutex::new(Vec::new()));
+    let writer = VecWriter::new(logs.clone());
+    init_logging(writer, log::LevelFilter::Trace);
+
+    let mut app = App::new(logs);
 
     let diff_string = get_raw_diff(args.path(), args.change_dir());
-    model.set_diff(&diff_string);
+    app.set_diff(&diff_string);
 
-    if model.diff().is_none() {
-        // This should be a widget rather than an error
-        terminal::restore_terminal()?;
+    if app.diff().is_none() {
+        // Exit programme gracefully when no diff is found
         println!("No diff found, exiting");
-        std::process::exit(1);
+        return Ok(());
     }
 
+    terminal::install_panic_hook();
+    let mut terminal = terminal::init_terminal()?;
+
+    let mut previous_log_length = app.console().len();
     // Will exit when RunningState is 'Done'
-    let mut previous_log_length = model.console().len();
-    while *model.running_state() != RunningState::Done {
+    while *app.running_state() != RunningState::Done {
         // Update console on new log
-        let current_log_length = model.console().len();
+        let current_log_length = app.console().len();
         if previous_log_length != current_log_length {
             previous_log_length = current_log_length;
-            model.handle_console();
+            app.handle_console();
         }
 
         // Render ui
-        terminal.draw(|rect| view::view(&mut model, rect))?;
+        terminal.draw(|rect| view::view(&mut app, rect))?;
 
-        let mut current_msg = model.handle_event()?;
+        let mut current_msg = app.handle_event()?;
 
         while let Some(msg) = current_msg {
-            current_msg = model.update(msg);
+            current_msg = app.update(msg);
         }
     }
 

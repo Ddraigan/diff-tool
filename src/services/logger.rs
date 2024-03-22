@@ -3,8 +3,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+use log::LevelFilter;
+
 pub struct VecWriter {
-    pub logs: Arc<Mutex<Vec<String>>>,
+    logs: Arc<Mutex<Vec<String>>>,
 }
 
 impl Write for VecWriter {
@@ -19,4 +21,18 @@ impl Write for VecWriter {
     fn flush(&mut self) -> std::io::Result<()> {
         Ok(())
     }
+}
+
+impl VecWriter {
+    pub fn new(logs: Arc<Mutex<Vec<String>>>) -> Self {
+        Self { logs }
+    }
+}
+
+pub fn init_logging(writer: VecWriter, level: LevelFilter) {
+    env_logger::Builder::new()
+        .target(env_logger::Target::Pipe(Box::new(writer)))
+        .filter(None, level)
+        .format(|buf, record| writeln!(buf, "[{}] - {}", record.level(), record.args()))
+        .init()
 }

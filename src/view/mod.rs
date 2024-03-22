@@ -7,7 +7,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::model::App;
+use crate::app::App;
 
 use self::{body::render_body, footer::render_footer, header::render_header};
 

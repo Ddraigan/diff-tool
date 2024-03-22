@@ -31,7 +31,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn default(logs: Arc<Mutex<Vec<String>>>) -> Self {
+    pub fn new(logs: Arc<Mutex<Vec<String>>>) -> Self {
         let mut new = Self {
             running_state: Default::default(),
             // TODO: This should be handled with a default config probably
