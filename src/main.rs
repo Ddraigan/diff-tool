@@ -31,6 +31,13 @@ fn main() -> Result<()> {
     let diff_string = get_raw_diff(args.path(), args.change_dir());
     model.set_diff(&diff_string);
 
+    if model.diff().is_none() {
+        // This should be a widget rather than an error
+        terminal::restore_terminal()?;
+        println!("No diff found, exiting");
+        std::process::exit(1);
+    }
+
     // Will exit when RunningState is 'Done'
     let mut previous_log_length = model.console().len();
     while *model.running_state() != RunningState::Done {
