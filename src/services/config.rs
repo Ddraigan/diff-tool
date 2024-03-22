@@ -34,3 +34,30 @@ impl Config {
         &self.keymap
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+    use std::io::Write;
+    use std::path::Path;
+
+    #[test]
+    fn test_new() -> Result<()> {
+        // Create a mock configuration file
+        let config_path = Path::new("config.toml");
+        let mut file = File::create(&config_path)?;
+        write!(file, "[keymap]\n\"key1\" = \"Quit\"")?;
+
+        // Call the function
+        let config = Config::new()?;
+
+        // Check the result
+        assert_eq!(config.keymap.0.get("key1"), Some(&Message::Quit));
+
+        // Clean up
+        std::fs::remove_file(config_path)?;
+
+        Ok(())
+    }
+}
