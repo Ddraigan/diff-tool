@@ -8,8 +8,8 @@ For git diffing in the terminal
 
 # Usage
 
-```diff-tool <file you want to view diff for>```
-```diff-tool -h``` for other options
+- ```diff-tool <file you want to view diff for>```
+- ```diff-tool -h``` for other options
 
 # Todo
 
