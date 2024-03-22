@@ -2,6 +2,15 @@
 
 For git diffing in the terminal
 
+# Install
+
+```cargo install diff-tool```
+
+# Usage
+
+```diff-tool <file you want to view diff for>```
+```diff-tool -h``` for other options
+
 # Todo
 
 - [ ] Colour theme support
