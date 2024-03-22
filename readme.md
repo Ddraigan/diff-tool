@@ -1,6 +1,6 @@
 # Diff Tool
 
-For git diffing in the terminal
+TUI for git diffing in the terminal
 
 # Install
 
