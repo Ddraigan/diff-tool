@@ -7,16 +7,11 @@ use ratatui::{
 };
 
 use crate::{
-    model::App,
+    model::{state::RunningState, App},
     services::git::{DiffKind, DiffLine},
 };
 
 pub(super) fn render_body(model: &mut App, f: &mut Frame, area: Rect) {
-    if model.diff().is_none() {
-        // This should be a widget rather than an error
-        panic!("No Diff was able to be drawn")
-    }
-
     // Body Layout (Left Diff & Right Diff)
     let [left_side, right_side] =
         Layout::horizontal(Constraint::from_percentages([50, 50])).areas(area);

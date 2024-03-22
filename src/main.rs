@@ -31,13 +31,20 @@ fn main() -> Result<()> {
     let diff_string = get_raw_diff(args.path(), args.change_dir());
     model.set_diff(&diff_string);
 
+    if model.diff().is_none() {
+        // This should be a widget rather than an error
+        terminal::restore_terminal()?;
+        println!("No diff found, exiting");
+        std::process::exit(1);
+    }
+
     // Will exit when RunningState is 'Done'
-    let mut log_len = model.console().len();
+    let mut previous_log_length = model.console().len();
     while *model.running_state() != RunningState::Done {
         // Update console on new log
-        let new_log_len = model.console().len();
-        if log_len != new_log_len {
-            log_len = new_log_len;
+        let current_log_length = model.console().len();
+        if previous_log_length != current_log_length {
+            previous_log_length = current_log_length;
             model.handle_console();
         }
 
@@ -46,8 +53,8 @@ fn main() -> Result<()> {
 
         let mut current_msg = model.handle_event()?;
 
-        while current_msg.is_some() {
-            current_msg = model.update(current_msg.unwrap());
+        while let Some(msg) = current_msg {
+            current_msg = model.update(msg);
         }
     }
 

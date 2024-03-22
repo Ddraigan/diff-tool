@@ -118,7 +118,7 @@ impl App {
     }
 
     pub fn diff(&self) -> Option<&Diff> {
-        if self.diff.old_diff().len() & self.diff.current_diff().len() != 0 {
+        if self.diff.old_diff().len() != 0 && self.diff.current_diff().len() != 0 {
             return Some(&self.diff);
         }
         None
