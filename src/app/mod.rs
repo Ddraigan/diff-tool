@@ -28,7 +28,7 @@ impl App {
         let mut new = Self {
             running_state: Default::default(),
             // TODO: This should be handled with a default config probably
-            config: Config::new().expect("Unable to get Configuration"),
+            config: Config::new().expect("A config"),
             diff: Default::default(),
             diff_state: Default::default(),
             logs,

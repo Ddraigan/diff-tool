@@ -5,6 +5,21 @@ use serde::Deserialize;
 use std::path::PathBuf;
 use std::{collections::HashMap, ops::Deref};
 
+const DEFAULT_CONFIG: &str = r#"[keymap]
+"esc" = "Quit"
+"q" = "Quit"
+"ctrl+c" = "Quit"
+"ctrl+d" = "Quit"
+"Shift+g" = "LastRow"
+"g" = "FirstRow"
+"j" = "NextRow"
+"k" = "PrevRow"
+
+[colour_scheme]
+"fg" = "white"
+"bg" = "transparent"
+"text" = "white""#;
+
 #[derive(Debug, Default, Deserialize)]
 pub struct Config {
     keymap: KeyMap,
@@ -22,14 +37,35 @@ impl Deref for KeyMap {
     }
 }
 
+// let config = match Config::new() {
+//     Ok(config) => config,
+//     Err(err) => {
+//         info!("Config Not Found, Using Default");
+//         DEFAULT_CONFIG
+//     }
+// };
+
 impl Config {
     pub fn new() -> Result<Self> {
+        let config_dir = get_config_dir()?; // Assuming you have a function to get the config directory
+
+        // Specify the path to the config file
+        let config_path = config_dir.join("config.toml");
+
+        let default = config::Config::builder()
+            .add_source(config::File::from_str(
+                DEFAULT_CONFIG,
+                config::FileFormat::Toml,
+            ))
+            .build()?;
+
         let config = config::Config::builder()
-            // TODO: get_config_dir + config = path to the config file
-            // then handle user config vs default config
-            .add_source(config::File::new("config", config::FileFormat::Toml))
-            .build()?
-            .try_deserialize()?;
+            .add_source(config::File::from(config_path.clone()))
+            .build()
+            .unwrap_or(default);
+
+        let config = config.try_deserialize()?;
+
         Ok(config)
     }
 
@@ -38,7 +74,7 @@ impl Config {
     }
 }
 
-pub fn get_data_dir() -> Result<PathBuf> {
+fn get_data_dir() -> Result<PathBuf> {
     let directory = if let Ok(s) = std::env::var("DIFF-TOOL-DATA") {
         PathBuf::from(s)
     } else if let Some(proj_dirs) = ProjectDirs::from("", "ddraigan", "diff-tool") {
@@ -49,7 +85,7 @@ pub fn get_data_dir() -> Result<PathBuf> {
     Ok(directory)
 }
 
-pub fn get_config_dir() -> Result<PathBuf> {
+fn get_config_dir() -> Result<PathBuf> {
     let directory = if let Ok(s) = std::env::var("DIFF-TOOL-CONFIG") {
         PathBuf::from(s)
     } else if let Some(proj_dirs) = ProjectDirs::from("", "ddraigan", "diff-tool") {
