@@ -1,21 +1,14 @@
 pub mod state;
 
+use self::state::{DiffState, RunningState};
+use crate::{
+    services::{config::Config, git::Diff, logger::Logs},
+    update::{keys::Key, message::Message},
+};
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyEventKind};
 use ratatui::widgets::ListState;
-use std::{
-    cell::RefCell,
-    cmp,
-    sync::{Arc, Mutex},
-    time::Duration,
-};
-
-use crate::{
-    services::{config::Config, git::Diff},
-    update::{keys::Key, message::Message},
-};
-
-use self::state::{DiffState, RunningState};
+use std::{cell::RefCell, cmp, time::Duration};
 
 #[derive(Debug)]
 pub struct App {
@@ -24,14 +17,14 @@ pub struct App {
     config: Config,
     diff: Diff,
     diff_state: DiffState,
-    logs: Arc<Mutex<Vec<String>>>,
+    logs: Logs,
     console_state: RefCell<ListState>,
     /// Default value is 250 millis
     tick_rate: Duration,
 }
 
 impl App {
-    pub fn new(logs: Arc<Mutex<Vec<String>>>) -> Self {
+    pub fn new(logs: Logs) -> Self {
         let mut new = Self {
             running_state: Default::default(),
             // TODO: This should be handled with a default config probably

@@ -1,5 +1,3 @@
-use std::sync::{Arc, Mutex};
-
 use anyhow::Result;
 use clap::Parser;
 use diff_tool::{
@@ -12,6 +10,7 @@ use diff_tool::{
     },
     view,
 };
+use std::sync::{Arc, Mutex};
 
 fn main() -> Result<()> {
     let args = Arguments::parse();

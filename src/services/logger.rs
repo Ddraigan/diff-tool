@@ -1,12 +1,13 @@
+use log::LevelFilter;
 use std::{
     io::Write,
     sync::{Arc, Mutex},
 };
 
-use log::LevelFilter;
+pub type Logs = Arc<Mutex<Vec<String>>>;
 
 pub struct VecWriter {
-    logs: Arc<Mutex<Vec<String>>>,
+    logs: Logs,
 }
 
 impl Write for VecWriter {
@@ -24,7 +25,7 @@ impl Write for VecWriter {
 }
 
 impl VecWriter {
-    pub fn new(logs: Arc<Mutex<Vec<String>>>) -> Self {
+    pub fn new(logs: Logs) -> Self {
         Self { logs }
     }
 }
