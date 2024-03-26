@@ -3,7 +3,7 @@ use clap::Parser;
 use diff_tool::{
     app::{state::RunningState, App},
     services::{
-        cli::Arguments,
+        cli::Args,
         git::get_raw_diff,
         logger::{init_logging, VecWriter},
         terminal,
@@ -13,7 +13,7 @@ use diff_tool::{
 use std::sync::{Arc, Mutex};
 
 fn main() -> Result<()> {
-    let args = Arguments::parse();
+    let args = Args::parse();
 
     // Set up logging that can be sent to the application console
     let logs = Arc::new(Mutex::new(Vec::new()));

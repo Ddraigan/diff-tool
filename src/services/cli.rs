@@ -1,10 +1,9 @@
+use clap::Parser;
 use std::path::{Path, PathBuf};
 
-use clap::Parser;
-
 #[derive(Parser, Default, Debug)]
-#[clap(author = "Ddraigan", version, about = "A side by side git diff view")]
-pub struct Arguments {
+#[command(author = "Ddraigan", version, about = "A side by side git diff view")]
+pub struct Args {
     #[clap(short = 'C', long)]
     /// Giving a full path allows diff-tool to diff outside of the git repo
     change_dir: bool,
@@ -12,9 +11,10 @@ pub struct Arguments {
     path: PathBuf,
     // #[clap(short, long, default_value_t = 250)]
     // tick_rate: u64,
+    // TODO: Add tick rate arg
 }
 
-impl Arguments {
+impl Args {
     pub fn path(&self) -> &Path {
         &self.path
     }
