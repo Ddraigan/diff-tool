@@ -1,0 +1,14 @@
+[keymap]
+"esc" = "Quit"
+"q" = "Quit"
+"ctrl+c" = "Quit"
+"ctrl+d" = "Quit"
+"Shift+g" = "LastRow"
+"g" = "FirstRow"
+"j" = "NextRow"
+"k" = "PrevRow"
+
+[colour_scheme]
+"fg" = "white"
+"bg" = "transparent"
+"text" = "white"
