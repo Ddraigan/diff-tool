@@ -8,10 +8,11 @@ use crate::update::message::Message;
 #[derive(Debug, Default, Deserialize)]
 pub struct Config {
     keymap: KeyMap,
+    colour_scheme: HashMap<String, String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize)]
-pub struct KeyMap(pub HashMap<String, Message>);
+pub struct KeyMap(HashMap<String, Message>);
 
 impl Deref for KeyMap {
     type Target = HashMap<String, Message>;

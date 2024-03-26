@@ -7,3 +7,8 @@
 "g" = "FirstRow"
 "j" = "NextRow"
 "k" = "PrevRow"
+
+[colour_scheme]
+"fg" = "white"
+"bg" = "transparent"
+"text" = "white"
