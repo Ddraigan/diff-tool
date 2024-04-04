@@ -5,7 +5,47 @@ use serde::Deserialize;
 use std::path::PathBuf;
 use std::{collections::HashMap, ops::Deref};
 
-const DEFAULT_CONFIG: &str = r#"[keymap]
+#[derive(Debug, Default, Deserialize)]
+pub struct Config {
+    keymap: KeyMap,
+    // TODO: Colour schemes
+    // colour_scheme: HashMap<String, String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+pub struct KeyMap(HashMap<String, Message>);
+
+impl Deref for KeyMap {
+    type Target = HashMap<String, Message>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Config {
+    pub fn new() -> Result<Self> {
+        let config_dir = get_config_dir()?; // Assuming you have a function to get the config directory
+
+        // Specify the path to the config file
+        let config_path = config_dir.join("config.toml");
+
+        let config = config::Config::builder()
+            .add_source(config::File::from(config_path.clone()))
+            .build()
+            .unwrap_or(Self::default_config()?);
+
+        let config = config.try_deserialize()?;
+
+        Ok(config)
+    }
+
+    pub fn keymap(&self) -> &KeyMap {
+        &self.keymap
+    }
+
+    fn default_config() -> Result<config::Config, config::ConfigError> {
+        let default_keymap = r#"[keymap]
 "esc" = "Quit"
 "q" = "Quit"
 "ctrl+c" = "Quit"
@@ -20,70 +60,26 @@ const DEFAULT_CONFIG: &str = r#"[keymap]
 "bg" = "transparent"
 "text" = "white""#;
 
-#[derive(Debug, Default, Deserialize)]
-pub struct Config {
-    keymap: KeyMap,
-    colour_scheme: HashMap<String, String>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize)]
-pub struct KeyMap(HashMap<String, Message>);
-
-impl Deref for KeyMap {
-    type Target = HashMap<String, Message>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-// let config = match Config::new() {
-//     Ok(config) => config,
-//     Err(err) => {
-//         info!("Config Not Found, Using Default");
-//         DEFAULT_CONFIG
-//     }
-// };
-
-impl Config {
-    pub fn new() -> Result<Self> {
-        let config_dir = get_config_dir()?; // Assuming you have a function to get the config directory
-
-        // Specify the path to the config file
-        let config_path = config_dir.join("config.toml");
-
-        let default = config::Config::builder()
+        config::Config::builder()
             .add_source(config::File::from_str(
-                DEFAULT_CONFIG,
+                default_keymap,
                 config::FileFormat::Toml,
             ))
-            .build()?;
-
-        let config = config::Config::builder()
-            .add_source(config::File::from(config_path.clone()))
             .build()
-            .unwrap_or(default);
-
-        let config = config.try_deserialize()?;
-
-        Ok(config)
-    }
-
-    pub fn keymap(&self) -> &KeyMap {
-        &self.keymap
     }
 }
 
-fn get_data_dir() -> Result<PathBuf> {
-    let directory = if let Ok(s) = std::env::var("DIFF-TOOL-DATA") {
-        PathBuf::from(s)
-    } else if let Some(proj_dirs) = ProjectDirs::from("", "ddraigan", "diff-tool") {
-        proj_dirs.data_local_dir().to_path_buf()
-    } else {
-        bail!("Unable to find data directory for ratatui-template");
-    };
-    Ok(directory)
-}
+// INFO: probably won't need this
+// fn get_data_dir() -> Result<PathBuf> {
+//     let directory = if let Ok(s) = std::env::var("DIFF-TOOL-DATA") {
+//         PathBuf::from(s)
+//     } else if let Some(proj_dirs) = ProjectDirs::from("", "ddraigan", "diff-tool") {
+//         proj_dirs.data_local_dir().to_path_buf()
+//     } else {
+//         bail!("Unable to find data directory for Diff-Tool");
+//     };
+//     Ok(directory)
+// }
 
 fn get_config_dir() -> Result<PathBuf> {
     let directory = if let Ok(s) = std::env::var("DIFF-TOOL-CONFIG") {
@@ -91,7 +87,7 @@ fn get_config_dir() -> Result<PathBuf> {
     } else if let Some(proj_dirs) = ProjectDirs::from("", "ddraigan", "diff-tool") {
         proj_dirs.config_local_dir().to_path_buf()
     } else {
-        bail!("Unable to find config directory for ratatui-template")
+        bail!("Unable to find config directory for Diff-Tool")
     };
     Ok(directory)
 }

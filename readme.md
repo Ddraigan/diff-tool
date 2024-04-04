@@ -11,6 +11,8 @@ TUI for git diffing in the terminal
 - ```diff-tool <file you want to view diff for>```
 - ```diff-tool -h``` for other options
 
+Now has a default config when no config is supplied
+
 # Todo
 
 - [ ] Colour theme support
