@@ -51,5 +51,5 @@ fn main() {
         }
     }
 
-    println!("cargo:rustc-env=RATATUI_TEMPLATE_GIT_INFO={}", git_describe);
+    println!("cargo:rustc-env=DIFF_TOOL_GIT_INFO={}", git_describe);
 }

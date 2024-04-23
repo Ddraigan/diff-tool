@@ -2,7 +2,7 @@ pub mod state;
 
 use self::state::{DiffState, RunningState};
 use crate::{
-    services::{config::Config, git::Diff, logger::Logs},
+    services::{config::AppConfig, git::Diff, logger::Logs},
     update::{keys::Key, message::Message},
 };
 use anyhow::Result;
@@ -14,7 +14,7 @@ use std::{cell::RefCell, cmp, time::Duration};
 pub struct App {
     running_state: RunningState,
     // TODO: Model could do with a colours / styling section that can load a config for theming
-    config: Config,
+    config: AppConfig,
     diff: Diff,
     diff_state: DiffState,
     logs: Logs,
@@ -28,7 +28,7 @@ impl App {
         let mut new = Self {
             running_state: Default::default(),
             // TODO: This should be handled with a default config probably
-            config: Config::new().expect("A config"),
+            config: AppConfig::new().expect("A config"),
             diff: Default::default(),
             diff_state: Default::default(),
             logs,
@@ -102,7 +102,7 @@ impl App {
         return self.logs.lock().unwrap().clone();
     }
 
-    pub fn config(&self) -> &Config {
+    pub fn config(&self) -> &AppConfig {
         &self.config
     }
 

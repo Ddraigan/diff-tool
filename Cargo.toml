@@ -1,6 +1,8 @@
 [package]
 name = "diff-tool"
+build = "build.rs"
 version = "0.2.1"
+authors = ["Ddraigan"]
 edition = "2021"
 license = "Apache-2.0"
 readme = "readme.md"
@@ -14,11 +16,14 @@ categories = ["command-line-utility"]
 
 [dependencies]
 anyhow = "1.0.75"
-clap = { version = "4.4.6", features = ["derive", "cargo"] }
+clap = { version = "4.4.6", features = ["derive", "cargo", "env", "string" ] }
 config = "0.14.0"
 crossterm = { version = "0.27.0" }
 directories = "5.0.1"
-env_logger = "0.11.0"
+lazy_static = "1.4.0"
 log = "0.4.20"
 ratatui = "0.26.0"
 serde = { version = "1.0.197", features = ["derive"] }
+tracing = "0.1.40"
+tracing-error = "0.2.0"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
