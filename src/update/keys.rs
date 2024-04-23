@@ -63,7 +63,7 @@ impl Key {
             11 => Key::F11,
             12 => Key::F12,
             _ => {
-                log::warn!("unknown function key: F{}", n);
+                tracing::warn!("unknown function key: F{}", n);
                 Key::Unknown
             }
         }

@@ -55,7 +55,7 @@ impl App {
     }
 
     pub fn update(&mut self, msg: Message) -> Option<Message> {
-        log::info!("{}", msg);
+        tracing::info!("{}", msg);
         self.handle_console();
 
         match msg {

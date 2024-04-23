@@ -5,7 +5,7 @@ use diff_tool::{
     services::{
         cli::Args,
         git::get_raw_diff,
-        logger::{init_logging, initialize_logging, VecWriter},
+        logger::{initialize_logging, VecWriter},
         terminal,
     },
     view,
@@ -13,13 +13,13 @@ use diff_tool::{
 use std::sync::{Arc, Mutex};
 
 fn main() -> Result<()> {
-    let args = Args::parse();
-
     // Set up logging that can be sent to the application console
     let logs = Arc::new(Mutex::new(Vec::new()));
     let writer = VecWriter::new(logs.clone());
     // init_logging(writer, log::LevelFilter::Trace);
-    initialize_logging();
+    initialize_logging(writer)?;
+
+    let args = Args::parse();
 
     let mut app = App::new(logs);
 
