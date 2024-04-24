@@ -1,7 +1,7 @@
 use clap::Parser;
 use std::path::{Path, PathBuf};
 
-use crate::services::config::get_config_dir;
+use crate::services::config::{get_config_dir, get_data_dir};
 
 #[derive(Parser, Debug)]
 #[command(author = "Ddraigan", version = version(), about = "A side by side git diff view")]
@@ -24,10 +24,6 @@ impl Args {
     pub fn change_dir(&self) -> bool {
         self.change_dir
     }
-
-    // pub fn tick_rate(&self) -> u64 {
-    //     self.tick_rate
-    // }
 }
 
 pub fn version() -> clap::builder::Str {
@@ -35,18 +31,17 @@ pub fn version() -> clap::builder::Str {
 
     let commit_hash = env!("DIFF_TOOL_GIT_INFO");
 
-    // let current_exe_path = PathBuf::from(clap::crate_name!()).display().to_string();
     let config_dir_path = get_config_dir().unwrap().display().to_string();
-    // let data_dir_path = get_data_dir().unwrap().display().to_string();
+    let data_dir_path = get_data_dir().unwrap().display().to_string();
 
-    let val = format!(
+    format!(
         "\
     {commit_hash}
 
     Authors: {author}
 
-    Config directory: {config_dir_path}"
-    );
-
-    val.into()
+    Config directory: {config_dir_path}
+    Data directory: {data_dir_path}\n"
+    )
+    .into()
 }
