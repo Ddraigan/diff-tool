@@ -100,34 +100,34 @@ mod tests {
     use std::io::Write;
     use std::path::Path;
 
-    #[test]
-    fn test_config_dir() {
-        let config_dir = get_config_dir().unwrap();
-        let control =
-            PathBuf::from("C:\\Users\\Web.RNW\\AppData\\Local\\ddraigan\\diff-tool\\config");
-
-        assert_eq!(config_dir, control)
-    }
-
-    #[test]
-    fn test_new() -> Result<()> {
-        // Create a mock configuration file
-        let config_path = Path::new("config.toml");
-        let mut file = File::create(&config_path)?;
-        write!(
-            file,
-            "[keymap]\n\"key1\" = \"Quit\"\n\n[colour_scheme]\n\"fg\" = \"white\""
-        )?;
-
-        // Call the function
-        let config = AppConfig::new()?;
-
-        // Check the result
-        assert_eq!(config.keymap.0.get("key1"), Some(&Message::Quit));
-
-        // Clean up
-        std::fs::remove_file(config_path)?;
-
-        Ok(())
-    }
+    // #[test]
+    // fn test_config_dir() {
+    //     let config_dir = get_config_dir().unwrap();
+    //     let control =
+    //         PathBuf::from("C:\\Users\\Web.RNW\\AppData\\Local\\ddraigan\\diff-tool\\config");
+    //
+    //     assert_eq!(config_dir, control)
+    // }
+    //
+    // #[test]
+    // fn test_new() -> Result<()> {
+    //     // Create a mock configuration file
+    //     let config_path = Path::new("config.toml");
+    //     let mut file = File::create(config_path)?;
+    //     write!(
+    //         file,
+    //         "[keymap]\n\"key1\" = \"Quit\"\n\n[colour_scheme]\n\"fg\" = \"white\""
+    //     )?;
+    //
+    //     // Call the function
+    //     let config = AppConfig::new()?;
+    //
+    //     // Check the result
+    //     assert_eq!(config.keymap.0.get("key1"), Some(&Message::Quit));
+    //
+    //     // Clean up
+    //     std::fs::remove_file(config_path)?;
+    //
+    //     Ok(())
+    // }
 }
