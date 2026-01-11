@@ -9,25 +9,34 @@
     self,
     nixpkgs,
   }: let
-    pkgs = nixpkgs.legacyPackages."x86_64-linux";
-  in {
-    packages."x86_64-linux".default = pkgs.rustPlatform.buildRustPackage {
-      name = "diff-tool";
-      src = ./.;
-      buildInputs = [pkgs.glib];
-      nativeBuildInputs = [pkgs.pkg-config];
-      cargoLock.lockFile = ./Cargo.lock;
-    };
+    systems = ["x86_64-linux" "aarch64-linux"];
 
-    devShells."x86_64-linux".default = pkgs.mkShell {
-      buildInputs = with pkgs; [
-        cargo
-        rustc
-        rustfmt
-        clippy
-        rust-analyzer
-      ];
-      env.RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
-    };
+    eachSystem = f:
+      nixpkgs.lib.genAttrs systems (system:
+        f system nixpkgs.legacyPackages.${system});
+  in {
+    packages = eachSystem (system: pkgs: {
+      default = pkgs.rustPlatform.buildRustPackage {
+        name = "diff-tool";
+        src = ./.;
+        buildInputs = [pkgs.glib];
+        nativeBuildInputs = [pkgs.pkg-config];
+        cargoLock.lockFile = ./Cargo.lock;
+      };
+    });
+
+    devShells = eachSystem (system: pkgs: {
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          cargo
+          rustc
+          rustfmt
+          clippy
+          rust-analyzer
+        ];
+
+        RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+      };
+    });
   };
 }
