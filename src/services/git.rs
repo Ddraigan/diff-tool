@@ -14,7 +14,7 @@ impl Diff {
         let old_diff = self.old_diff.len();
         let current_diff = self.current_diff.len();
 
-        std::cmp::max(old_diff, current_diff) - 1
+        std::cmp::max(old_diff, current_diff).saturating_sub(1)
     }
 
     pub fn old_diff(&self) -> &[DiffLine] {
@@ -34,19 +34,19 @@ impl Diff {
         length.try_into().unwrap_or(4)
     }
 
-    /// Gets the largest line number from each diff
+    /// Returns the largest line number from each diff
     fn largest_line_number(&self) -> (usize, usize) {
         let old_diff = self
             .old_diff
             .iter()
-            .map(|x| x.line_number().unwrap_or(0))
+            .filter_map(|x| x.line_number())
             .max()
             .unwrap_or(0);
 
         let current_diff = self
-            .old_diff
+            .current_diff
             .iter()
-            .map(|x| x.line_number().unwrap_or(0))
+            .filter_map(|x| x.line_number())
             .max()
             .unwrap_or(0);
 
@@ -54,7 +54,7 @@ impl Diff {
     }
 
     pub fn parse_diff(diff_string: &str) -> Self {
-        let lines = diff_string.split("\n");
+        let lines = diff_string.lines();
 
         let mut diff = Self::default();
 
@@ -168,8 +168,8 @@ impl DiffLine {
         &self.kind
     }
 
-    pub fn line_number(&self) -> &Option<usize> {
-        &self.line_number
+    pub fn line_number(&self) -> Option<usize> {
+        self.line_number
     }
 }
 
