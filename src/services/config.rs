@@ -31,9 +31,9 @@ impl AppConfig {
         let config_path = config_dir.join("config.toml");
 
         let config = config::Config::builder()
-            .add_source(config::File::from(config_path.clone()))
+            .add_source(config::File::from(config_path))
             .build()
-            .unwrap_or(Self::default_config()?);
+            .unwrap_or_else(|_| Self::default_config().expect("Default config should not fail"));
 
         let config = config.try_deserialize()?;
 

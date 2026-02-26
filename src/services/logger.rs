@@ -59,7 +59,7 @@ where
         self.logs
             .lock()
             .unwrap()
-            .push(format!("{}", event.metadata().name()));
+            .push(event.metadata().name().to_string())
     }
 }
 
@@ -71,8 +71,8 @@ impl VecWriter {
 
 pub fn initialize_logging(vec_writer: VecWriter) -> Result<()> {
     let directory = get_data_dir()?;
-    std::fs::create_dir_all(directory.clone())?;
-    let log_path = directory.join(LOG_FILE.clone());
+    std::fs::create_dir_all(&directory)?;
+    let log_path = directory.join(&*LOG_FILE);
     let file_writer = std::fs::File::create(log_path)?;
 
     std::env::set_var(
