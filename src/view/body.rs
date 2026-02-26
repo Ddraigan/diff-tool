@@ -33,7 +33,7 @@ pub(super) fn render_body(model: &mut App, f: &mut Frame, area: Rect) {
 }
 
 /// Draws a diff table
-fn build_diff_table(diff: &[DiffLine], is_current_diff: bool, line_number_char_len: u16) -> Table {
+fn build_diff_table(diff: &'_ [DiffLine], is_current_diff: bool, line_number_char_len: u16) -> Table<'_> {
     let diff_title = if is_current_diff { "New" } else { "Original" };
 
     let rows = diff.iter().map(parse_diff_line);
@@ -66,7 +66,7 @@ fn build_diff_table(diff: &[DiffLine], is_current_diff: bool, line_number_char_l
         .highlight_symbol(">>")
 }
 
-fn parse_diff_line(line: &DiffLine) -> Row {
+fn parse_diff_line(line: &'_ DiffLine) -> Row<'_> {
     // TODO: The styling should be a property of the model
     let line_number_style = Style::default().fg(Color::Gray);
 

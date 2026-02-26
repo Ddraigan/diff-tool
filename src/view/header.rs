@@ -12,6 +12,7 @@ pub(super) fn render_header(f: &mut Frame, area: Rect) {
 
 /// Draws the title component
 fn draw_title<'a>() -> Paragraph<'a> {
+    // TODO: instead of Git Diff View, this should be the path and file we are viewing
     Paragraph::new("Git Diff View")
         .style(Style::default().fg(Color::LightCyan))
         .centered()

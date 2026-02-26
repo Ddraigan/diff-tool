@@ -38,7 +38,7 @@ impl App {
 
         new.handle_console();
 
-        return new;
+        new
     }
 
     pub fn console_state(&self) -> &RefCell<ListState> {
@@ -111,7 +111,7 @@ impl App {
     }
 
     pub fn diff(&self) -> Option<&Diff> {
-        if self.diff.old_diff().len() != 0 && self.diff.current_diff().len() != 0 {
+        if !self.diff.old_diff().is_empty() && !self.diff.current_diff().is_empty() {
             return Some(&self.diff);
         }
         None

@@ -25,7 +25,7 @@ pub(super) fn render_footer(app: &App, area: Rect, f: &mut Frame) {
 }
 
 /// Draws the console menu component
-fn draw_console(app: &App) -> List {
+fn draw_console(app: &'_ App) -> List<'_> {
     let items = app.console().to_owned();
     List::new(items)
         .block(Block::bordered().title("Console"))
@@ -36,7 +36,7 @@ fn draw_console(app: &App) -> List {
 }
 
 /// Draws the help menu component
-fn build_help_table(app: &App) -> Table {
+fn build_help_table(app: &'_ App) -> Table<'_> {
     let key_style = Style::default().fg(Color::LightCyan);
     let message_style = Style::default().fg(Color::Gray);
 
@@ -75,8 +75,8 @@ fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(String, &Messag
 
     for (_, message) in map.iter() {
         if !processed_messages.contains(message) {
-            let combined_keys = map
-                .into_iter()
+            let combined_keys: String = map
+                .iter()
                 .filter(|(_, m)| *m == message)
                 .enumerate()
                 .map(|(i, (k, _))| {
@@ -86,7 +86,7 @@ fn combine_keys_by_value(map: &HashMap<String, Message>) -> Vec<(String, &Messag
                         format!(" | {}", k.to_uppercase())
                     }
                 })
-                .collect::<String>();
+                .collect();
             result.push((combined_keys, message));
             processed_messages.insert(message);
         }

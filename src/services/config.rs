@@ -95,10 +95,10 @@ pub fn get_config_dir() -> Result<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::fs::File;
-    use std::io::Write;
-    use std::path::Path;
+    // use super::*;
+    // use std::fs::File;
+    // use std::io::Write;
+    // use std::path::Path;
 
     // #[test]
     // fn test_config_dir() {

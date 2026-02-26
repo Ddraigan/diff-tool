@@ -11,6 +11,7 @@ use crate::app::App;
 
 use self::{body::render_body, footer::render_footer, header::render_header};
 
+// TODO: Maybe passing in App is too much, a subset of it could be better
 /// Renders all the components
 pub fn view(model: &mut App, f: &mut Frame) {
     // Term size
